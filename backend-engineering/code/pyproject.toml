@@ -1,0 +1,17 @@
+[project]
+name = "lpu-code"
+version = "0.1.0"
+description = "Runnable class code for the LPU Backend + GenAI training"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]",
+    "openai",
+    "litellm",
+    "pydantic",
+    "python-dotenv",
+]
+
+[tool.uv.workspace]
+members = [
+    "lpu-code",
+]

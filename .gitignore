@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────
+# Trainer-only material — NEVER publish (this repo is public)
+# Run books, quick-check answer keys, quiz form scripts with the
+# correct answers marked, question decks with answers in the
+# speaker notes, and the internal planning log.
+# ─────────────────────────────────────────────────────────────
+trainer/
+Course_Tracker.md
+learning.md
+decisions.md
+reflections-inbox.md
+CLAUDE.md
+.claude/
+7_Week_DSA_Backend_GenAI_Curriculum_Proposal_LPU.md
+LPU Trainer Handover.md
+
+# ── Secrets ──
+.env
+.env.*
+!.env.example
+*.key
+
+# ── Python ──
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# ── Node (slide build tooling) ──
+node_modules/
+package-lock.json
+
+# ── OS / Office temp files ──
+.DS_Store
+Thumbs.db
+~$*
+.~lock.*
