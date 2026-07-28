@@ -34,8 +34,11 @@ Zero-shot / few-shot / chain-of-thought prompting, function calling and tool use
 
 - Notebook: [`Day02_AI.ipynb`](notebooks/Day02_AI.ipynb)
 - Gradio bonus: [`Day02_Gradio.ipynb`](notebooks/Day02_Gradio.ipynb)
+- Exercises: [`Day02_Exercises.ipynb`](exercises/Day02_Exercises.ipynb) — Pydantic validation + Gradio UIs, six short tasks
 - Slides: [`Day02_GenAI.pptx`](slides/Day02_GenAI.pptx)
 - Notes: [`Day_02_AI.md`](notes/Day_02_AI.md)
+
+> Q1–Q5 of the exercises need **no API key** — only the chatbot in Q6 does.
 
 ### Day 3 — Embeddings & vector search
 Why keyword search fails on meaning, turning text into embeddings, measuring closeness with cosine similarity, chunking documents (and what bad boundaries destroy), storing and filtering vectors in Chroma, then assembling the full index → embed → store → search pipeline and finishing with RAG in five lines.
