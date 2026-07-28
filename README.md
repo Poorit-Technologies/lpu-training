@@ -35,7 +35,7 @@ Taught entirely in **Google Colab**. Nothing to install: open the notebook, add 
 | --- | --- | --- |
 | 1 | GenAI foundations — how LLMs work, tokens & context windows, calling OpenAI / Gemini / LiteLLM, structured output, prompting basics, failure modes | [notebook](generative-ai/notebooks/Day01_AI.ipynb) · [exercises](generative-ai/exercises/Day01_Exercises.ipynb) · [slides](generative-ai/slides/Day01_GenAI.pptx) · [notes](generative-ai/notes/Day_01_AI.md) |
 | 2 | Advanced prompting (zero/few-shot, chain-of-thought) · function calling & tools · LLM parameters · streaming · Gradio UIs | [notebook](generative-ai/notebooks/Day02_AI.ipynb) · [gradio](generative-ai/notebooks/Day02_Gradio.ipynb) · [slides](generative-ai/slides/Day02_GenAI.pptx) · [notes](generative-ai/notes/Day_02_AI.md) |
-| 3 | Embeddings · vector databases · similarity search · chunking strategies | *coming soon* |
+| 3 | Embeddings · cosine similarity · chunking strategies · vector databases (Chroma) · a semantic search engine + a first taste of RAG | [notebook](generative-ai/notebooks/Day03_AI.ipynb) · [slides](generative-ai/slides/Day03_GenAI.pptx) · [notes](generative-ai/notes/Day_03_AI.md) |
 | 4 | RAG — build a retrieval-augmented application end to end | *coming soon* |
 | 5 | AI agents (workflows, memory, planning) · production GenAI: cost, evaluation, responsible AI | *coming soon* |
 

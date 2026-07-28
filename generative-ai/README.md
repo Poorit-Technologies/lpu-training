@@ -38,7 +38,13 @@ Zero-shot / few-shot / chain-of-thought prompting, function calling and tool use
 - Notes: [`Day_02_AI.md`](notes/Day_02_AI.md)
 
 ### Day 3 — Embeddings & vector search
-*Coming soon.*
+Why keyword search fails on meaning, turning text into embeddings, measuring closeness with cosine similarity, chunking documents (and what bad boundaries destroy), storing and filtering vectors in Chroma, then assembling the full index → embed → store → search pipeline and finishing with RAG in five lines.
+
+- Notebook: [`Day03_AI.ipynb`](notebooks/Day03_AI.ipynb)
+- Slides: [`Day03_GenAI.pptx`](slides/Day03_GenAI.pptx)
+- Notes: [`Day_03_AI.md`](notes/Day_03_AI.md)
+
+> No OpenAI key? Section 3 of the notebook has a free local embedding model — uncomment five lines and the whole notebook runs without one.
 
 ### Day 4 — RAG end to end
 *Coming soon.*
