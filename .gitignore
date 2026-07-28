@@ -27,7 +27,8 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 
-# ── Node (slide build tooling) ──
+# ── Slide build tooling (generators stay local — only the .pptx ships) ──
+*.build.js
 node_modules/
 package-lock.json
 
