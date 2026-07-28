@@ -29,6 +29,9 @@ __pycache__/
 
 # ── Slide build tooling (generators stay local — only the .pptx ships) ──
 *.build.js
+
+# ── Personal intro deck — local only, not published ──
+generative-ai/slides/Bhupendra_Intro.pptx
 node_modules/
 package-lock.json
 
