@@ -7,7 +7,7 @@ Everything for the GenAI half of the course. **Runs in Google Colab — nothing 
 | Folder | What's in it |
 | --- | --- |
 | [`notebooks/`](notebooks/) | The main class notebooks. This is what we run together in class. |
-| [`exercises/`](exercises/) | Practice notebooks — fill in the `___` blanks yourself. |
+| [`exercises/`](exercises/) | Practice notebooks — fill in the `___` blanks, or build one from scratch. |
 | [`slides/`](slides/) | Class decks (`.pptx`) used during the session. |
 | [`notes/`](notes/) | Detailed written notes for each day — use these for revision. |
 
@@ -34,11 +34,20 @@ Zero-shot / few-shot / chain-of-thought prompting, function calling and tool use
 
 - Notebook: [`Day02_AI.ipynb`](notebooks/Day02_AI.ipynb)
 - Gradio bonus: [`Day02_Gradio.ipynb`](notebooks/Day02_Gradio.ipynb)
-- Exercises: [`Day02_Exercises.ipynb`](exercises/Day02_Exercises.ipynb) — Pydantic validation + Gradio UIs, six short tasks
+- Exercises: [`Day02_Exercises.ipynb`](exercises/Day02_Exercises.ipynb) — Pydantic validation + Gradio UIs, five short tasks and a mini-project
 - Slides: [`Day02_GenAI.pptx`](slides/Day02_GenAI.pptx)
 - Notes: [`Day_02_AI.md`](notes/Day_02_AI.md)
 
-> Q1–Q5 of the exercises need **no API key** — only the chatbot in Q6 does.
+> Q1–Q4 of the exercises need **no API key** — only Q5 and the mini-project do.
+
+**Build it yourself.** Three standalone notebooks — no starter code, no blanks to fill. Each
+one gives you the setup and the boring parts, then hands you the build:
+
+| Notebook | What you build | Key needed |
+| --- | --- | --- |
+| [`Day02a_WordCounter.ipynb`](exercises/Day02a_WordCounter.ipynb) | a plain Python function turned into a web app with `gr.Interface` | no |
+| [`Day02b_PamphletGenerator.ipynb`](exercises/Day02b_PamphletGenerator.ipynb) | scrape a company's landing page, stream an AI-written pamphlet into a UI (the scraper is given) | yes |
+| [`Day02c_ChatInterface.ipynb`](exercises/Day02c_ChatInterface.ipynb) | a chatbot with a personality, memory included, via `gr.ChatInterface` | yes |
 
 ### Day 3 — Embeddings & vector search
 Why keyword search fails on meaning, turning text into embeddings, measuring closeness with cosine similarity, chunking documents (and what bad boundaries destroy), storing and filtering vectors in Chroma, then assembling the full index → embed → store → search pipeline and finishing with RAG in five lines.
@@ -47,7 +56,7 @@ Why keyword search fails on meaning, turning text into embeddings, measuring clo
 - Slides: [`Day03_GenAI.pptx`](slides/Day03_GenAI.pptx)
 - Notes: [`Day_03_AI.md`](notes/Day_03_AI.md)
 
-> No OpenAI key? Section 3 of the notebook has a free local embedding model — uncomment five lines and the whole notebook runs without one.
+> **No OpenAI key? Most of it still runs.** The notebook builds on the free local `all-MiniLM-L6-v2` model, so sections 2–5 and 7–9 need no key at all. Only the OpenAI embeddings section (§6) and the RAG teaser (§10) do.
 
 ### Day 4 — RAG end to end
 *Coming soon.*

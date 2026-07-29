@@ -11,6 +11,7 @@ By end of day a student can:
 - Explain why **keyword search fails** on meaning, and what an **embedding** is (text → a fixed-length vector).
 - Generate embeddings with the free local **`all-MiniLM-L6-v2`** (384-d), and compare against hosted **`text-embedding-3-small`** (1536-d) via LiteLLM.
 - Score meaning with **`cosine_similarity`** and read a similarity matrix.
+- **Visualise** an embedding space — squash 384 dimensions to 2 with PCA and watch topics cluster.
 - **Chunk** a document with **`RecursiveCharacterTextSplitter`** — and say why a naive fixed-size split destroys facts.
 - Store, filter and query vectors in **Chroma**, and name when to reach for FAISS / pgvector / a managed DB instead.
 - Wire the full **index → embed → store → query → top-k** pipeline, and see how those top-k chunks become **RAG**.
@@ -182,6 +183,56 @@ Vector **length** tracks things like how long or emphatic the text is. Vector **
 Zero shared words with the top hit, and it still wins by 15×. *That* is the moment the concept lands.
 
 ❓ **Ask:** *"Cosine ignores length. Give me a case where that's exactly wrong."* → *e.g. distinguishing a one-word query from a detailed spec — sometimes you want length to matter, which is why hybrid/re-ranking exists.*
+
+---
+
+## 3️⃣b Seeing the space — 12 min  `[Core]`  ⭐ the moment it clicks
+
+A table of numbers convinces. A **picture** is remembered.
+
+Nobody can picture 384 dimensions — but you can **squash** them to 2 and look at the shadow. That's
+**PCA**: keep the two directions carrying the most variation, discard the rest.
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+many_vectors = model.encode(many_texts)          # (9, 384)
+coords = PCA(n_components=2).fit_transform(many_vectors)   # (9, 2)
+
+plt.scatter(coords[:, 0], coords[:, 1], c=colors, s=160)
+```
+
+Nine sentences — three about **AI**, three about **food**, three about **sport** — and they land in
+three clean clusters on the plot.
+
+💡 **AHA — say this twice:** *"We never passed a label, a category or a tag. Only nine sentences. **The
+grouping is what meaning looks like when you plot it.**"*
+
+💡 **AHA — this is the whole day in one picture:** *"Semantic search is just: put the question on this
+map, and return whatever is nearest."*
+
+⚠️ **Be honest about the picture.** PCA discards 382 of 384 dimensions, so it's a **shadow, not the
+truth** — two points that look close on screen may not be close in the real space. Build intuition from
+the plot; **make decisions with `cosine_similarity`.**
+
+🧑‍🏫 **Trainer move — add a bridging sentence live.** Type `"AI is used to analyse cricket matches"` into
+`many_texts`, re-run, and watch it land *between* the AI and sport clusters. That single re-run kills the
+idea that embeddings are just topic labels in disguise.
+
+### 🌐 Show them a bigger space — the TensorFlow Embedding Projector
+
+**<https://projector.tensorflow.org/>** — nothing to install, loads 10,000 Word2Vec words in interactive 3-D.
+Two minutes on the projector is worth ten of explanation:
+
+1. Open it — Word2Vec 10K loads by default
+2. Search **`india`** on the right → read the nearest neighbours aloud
+3. Switch **PCA → t-SNE** and watch the clusters reorganise live
+4. Try **`king`**, then **`teacher`**, then a word from the students' own field
+
+❓ **Ask:** *"The plot shows three clusters. Did we tell the model what the categories were?"* → *No. We
+passed raw sentences only. The model has no idea what "sport" means as a label — it just places texts
+that are used in similar ways near each other.*
 
 ---
 
@@ -390,7 +441,8 @@ Fill-in-the-blank versions are in the notebook (§10) — these are the same tas
 1. **Similarity ladder** — embed one query and four sentences (one paraphrase, one same-topic, one different-topic, one nonsense). Rank them by cosine and check the order matches your intuition.
 2. **Break the chunker** — chunk a paragraph at 40 characters with no overlap, then query for a fact that straddles a boundary. Watch it fail. Add overlap; watch it recover.
 3. **Filtered search** — add `metadata={"day": 1 or 2}` to your chunks, then run the *same* query with `where={"day": 1}` and with no filter. Compare the top hit.
-4. **Two models, one question `[Extended]`** — index the chunks with `all-MiniLM-L6-v2`, then run a query embedded with `text-embedding-3-small`. Watch it break. Fix it, and say in one sentence why.
+4. **Bridge the clusters** — add a sentence that belongs to two topics at once (`"AI is used to analyse cricket matches"`) to the visualisation set, re-run the PCA cells, and describe where it lands and why.
+5. **Two models, one question `[Extended]`** — index the chunks with `all-MiniLM-L6-v2`, then run a query embedded with `text-embedding-3-small`. Watch it break. Fix it, and say in one sentence why.
 
 ---
 
@@ -403,6 +455,7 @@ Fill-in-the-blank versions are in the notebook (§10) — these are the same tas
 4. Why cosine similarity rather than Euclidean distance? — *meaning is carried by the vector's direction; length mostly reflects text length/intensity.*
 5. Give two reasons we chunk documents. — *one vector can't represent many ideas; you want the relevant paragraph, not the book; cost/context limits; the 8k-token input cap.*
 6. What is chunk overlap for, and which splitter should you reach for? — *overlap means a fact split across a boundary still appears whole in a neighbouring chunk; use `RecursiveCharacterTextSplitter`, which breaks on paragraph → sentence → word rather than mid-token.*
+6b. Why is a 2-D PCA plot of embeddings a *shadow* rather than the truth? — *it keeps only the two directions with the most variation and throws away the other 382, so on-screen distance is approximate. Decide with cosine similarity, not with your eyes.*
 7. Name two things a vector DB gives you over a numpy array. — *ANN speed, persistence, metadata filtering, updates/deletes, concurrency.*
 8. Chroma returns `distances`. Higher or lower is better? — *lower — it's a distance, not a similarity.*
 9. Why store metadata with each chunk? — *to filter before searching, and to cite the real source.*
@@ -419,6 +472,9 @@ Fill-in-the-blank versions are in the notebook (§10) — these are the same tas
 ---
 
 ## 🔗 Resources (verify on teaching day)
+- **TensorFlow Embedding Projector** (interactive 3-D, 10k Word2Vec words): https://projector.tensorflow.org/ ⭐
+- **Nomic Atlas** (big text/image embedding maps): https://atlas.nomic.ai/
+- **Apple Embedding Atlas** (millions of points, runs locally): https://github.com/apple/embedding-atlas
 - **Sentence-Transformers:** https://www.sbert.net/
 - **`all-MiniLM-L6-v2` (free, local):** https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 - **LangChain text splitters:** https://python.langchain.com/docs/concepts/text_splitters/
