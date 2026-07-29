@@ -53,8 +53,16 @@ one gives you the setup and the boring parts, then hands you the build:
 Why keyword search fails on meaning, turning text into embeddings, measuring closeness with cosine similarity, chunking documents (and what bad boundaries destroy), storing and filtering vectors in Chroma, then assembling the full index → embed → store → search pipeline and finishing with RAG in five lines.
 
 - Notebook: [`Day03_AI.ipynb`](notebooks/Day03_AI.ipynb)
+- Exercises: [`Day03_Exercises.ipynb`](exercises/Day03_Exercises.ipynb) — eight short tasks; only the last needs a key
 - Slides: [`Day03_GenAI.pptx`](slides/Day03_GenAI.pptx)
 - Notes: [`Day_03_AI.md`](notes/Day_03_AI.md)
+
+**Build it yourself.** Two standalone notebooks — no starter code, no blanks:
+
+| Notebook | What you build | Key needed |
+| --- | --- | --- |
+| [`Day03a_EmbeddingExplorer.ipynb`](exercises/Day03a_EmbeddingExplorer.ipynb) | plot your own sentences as a map of meaning, then find nearest neighbours | no |
+| [`Day03b_DocumentQA.ipynb`](exercises/Day03b_DocumentQA.ipynb) | chunk + index a document of your choice and ask it questions, with a Gradio chat | yes |
 
 > **No OpenAI key? Most of it still runs.** The notebook builds on the free local `all-MiniLM-L6-v2` model, so sections 2–5 and 7–9 need no key at all. Only the OpenAI embeddings section (§6) and the RAG teaser (§10) do.
 
