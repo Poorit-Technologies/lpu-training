@@ -9,9 +9,9 @@
 ## 🎯 Objectives
 By end of day a student can:
 - Explain why **keyword search fails** on meaning, and what an **embedding** is (text → a fixed-length vector).
-- Generate embeddings with **`text-embedding-3-small`** (and a **free local model** when there's no API key).
-- Compute **cosine similarity** by hand with numpy and rank documents against a query.
-- **Chunk** a document sensibly — pick a strategy, a size and an overlap — and say why bad chunking breaks retrieval.
+- Generate embeddings with the free local **`all-MiniLM-L6-v2`** (384-d), and compare against hosted **`text-embedding-3-small`** (1536-d) via LiteLLM.
+- Score meaning with **`cosine_similarity`** and read a similarity matrix.
+- **Chunk** a document with **`RecursiveCharacterTextSplitter`** — and say why a naive fixed-size split destroys facts.
 - Store, filter and query vectors in **Chroma**, and name when to reach for FAISS / pgvector / a managed DB instead.
 - Wire the full **index → embed → store → query → top-k** pipeline, and see how those top-k chunks become **RAG**.
 
@@ -68,52 +68,69 @@ That is the whole idea of an embedding. Everything else today is mechanics.
 An **embedding** is a **list of numbers that represents the meaning of a piece of text**. You get it from an **embedding model** — a different model from the chat models of Day 1–2.
 
 ```python
-from openai import OpenAI
-client = OpenAI()
+from sentence_transformers import SentenceTransformer
 
-r = client.embeddings.create(
-    model="text-embedding-3-small",
-    input="How do I cancel my order?",
-)
-vector = r.data[0].embedding
+model = SentenceTransformer('all-MiniLM-L6-v2')   # free, local, runs on the Colab CPU
 
-print(len(vector))   # 1536
-print(vector[:5])    # [-0.0142, 0.0311, -0.0067, 0.0189, -0.0225]
+texts = [
+    "Machine learning is a branch of AI",
+    "Deep learning uses neural networks",
+    "I love cooking Indian food",
+    "Cricket is popular in India",
+]
+
+embeddings = model.encode(texts)
+print(embeddings.shape)      # (4, 384) -> 4 texts, 384 numbers each
 ```
+
+🧑‍🏫 **Trainer note — no API key needed here.** The local model means §1–§4 run for every student regardless of credits. The hosted model arrives in §2b as a *comparison*, not a dependency.
 
 Three facts to land hard:
 
-**(a) Every text becomes the *same* number of values.** Three words or three paragraphs — always 1536 floats for this model. That fixed size is what makes comparison possible at all.
+**(a) Every text becomes the *same* number of values.** Three words or three paragraphs — always 384 floats for this model. Change one sentence to a whole paragraph, re-run, and the shape is still `(4, 384)`. That fixed size is what makes comparison possible at all.
 
-**(b) Position encodes meaning.** Think of a world map: two numbers (latitude, longitude) place any city, and cities that are *near in the numbers* are *near in reality*. An embedding is that idea with 1536 axes instead of 2 — far too many to draw, but the same rule holds: **close vectors = close meaning**.
+**(b) Position encodes meaning.** Think of a world map: two numbers (latitude, longitude) place any city, and cities that are *near in the numbers* are *near in reality*. An embedding is that idea with 384 axes instead of 2 — far too many to draw, but the same rule holds: **close vectors = close meaning**.
 
-**(c) The words are gone.** At search time nothing compares text to text. You are comparing 1536 numbers to 1536 numbers.
+**(c) The words are gone.** At search time nothing compares text to text. You are comparing 384 numbers to 384 numbers.
 
-💡 **AHA:** *"'How do I cancel my order?' and 'What's your return policy?' share **no words** — but their vectors point in almost the same direction. The meaning survived the trip into numbers."*
+💡 **AHA:** *"'Machine learning is a branch of AI' and 'Deep learning uses neural networks' share **almost no words** — but their vectors point in nearly the same direction, far closer than either is to cricket or cooking. The meaning survived the trip into numbers."*
+
+### 2b · The hosted model, for comparison — LiteLLM
+
+```python
+from litellm import embedding
+
+response = embedding(model="text-embedding-3-small", input=texts)
+
+len(response.data[0]["embedding"])   # 1536
+embeddings.shape[1]                  # 384  (the local model)
+```
+
+**Same four sentences, two completely different coordinate systems.** That contrast is the cleanest way to land the "same model on both sides" rule that follows.
 
 ### The model you'll use
 
 | Model | Dimensions | Price (per 1M tokens) | Notes |
 | ----- | ----- | ----- | ----- |
-| **`text-embedding-3-small`** | **1536** (shrinkable to 256) | **$0.02** | the default for ~everything; what we use today |
-| `text-embedding-3-large` | 3072 (shrinkable) | $0.13 | better quality, bigger/costlier index |
+| **`all-MiniLM-L6-v2`** (local) | **384** | **free** | runs on CPU in Colab, no API key — **what we build with today** |
+| **`text-embedding-3-small`** | **1536** (shrinkable to 256) | **$0.02** | the hosted default; better quality, shown in §2b |
+| `text-embedding-3-large` | 3072 (shrinkable) | $0.13 | better still, bigger/costlier index |
 | `text-embedding-ada-002` | 1536 | $0.10 | the old one — no reason to pick it now |
-| **`all-MiniLM-L6-v2`** (local) | **384** | **free** | runs on CPU in Colab, no API key — our fallback |
 
 💡 **AHA — it's basically free:** at $0.02 per million tokens, embedding **an entire novel costs under one rupee**. Cost is never the reason you don't index something. *(Latest 2026 pricing — re-check on the day.)*
 
-🧑‍🏫 **Trainer note — the `dimensions` knob:** `text-embedding-3-small` supports `dimensions=256`, which returns a shorter vector that still works. Smaller index, faster search, a small accuracy cost. Show it: same sentence, `len()` = 1536 vs 256.
+🧑‍🏫 **Trainer note — the `dimensions` knob:** `text-embedding-3-small` also accepts `dimensions=256`, returning a shorter vector that still works — smaller index, faster search, a small accuracy cost. Mention it; you don't need to demo it.
 
 ### Four rules students must not break
 
 1. **Use the *same* model for documents and queries.** Two models = two incompatible coordinate systems. The search doesn't error — it silently returns nonsense. (This is the #1 real-world bug in this space.)
 2. **Change the model → re-embed everything.** Your stored vectors are only meaningful in the space they were made in.
-3. **Embedding models don't chat.** No `temperature`, no system prompt, no answer — a different endpoint (`client.embeddings.create`) that returns numbers, not text.
-4. **Respect the input limit.** `text-embedding-3-small` takes ~8,191 tokens per input. Longer text must be chunked — which is §4.
+3. **Embedding models don't chat.** No `temperature`, no system prompt, no answer — `model.encode()` (or the `embedding()` endpoint) returns numbers, not text.
+4. **Respect the input limit.** `all-MiniLM-L6-v2` silently truncates past ~256 word-pieces; `text-embedding-3-small` takes ~8,191 tokens. Either way, longer text must be chunked — which is §4.
 
 🧑‍🏫 **Trainer note — beyond text:** the same idea powers image search (CLIP), audio search, and code search. "Turn a thing into a vector where near = similar" is one of the most reusable ideas in modern AI. Google Photos finding "dog" in your untagged pictures is this.
 
-❓ **Ask:** *"You embed 10,000 support tickets with `text-embedding-3-small`. Next month you switch to `-3-large` for the queries only. What happens?"* → *garbage results, no error. Different space. You must re-embed the tickets.*
+❓ **Ask:** *"You index 10,000 support tickets with `all-MiniLM-L6-v2` (384-d), then embed the queries with `text-embedding-3-small` (1536-d). What happens?"* → *here the dimensions differ, so Chroma will actually complain — a lucky escape. Now make both 1536-d with two different providers: **no error at all**, just silent nonsense. That's the version that reaches production.*
 
 ---
 
@@ -124,22 +141,24 @@ We have vectors. We need a **single number** for "how close are these two?"
 The standard answer is **cosine similarity** — it measures the **angle** between two vectors, ignoring their length:
 
 ```python
-import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
-def cosine(a, b):
-    a, b = np.array(a), np.array(b)
-    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+similarity_matrix = cosine_similarity(embeddings)      # every text vs every text
+
+similarity_matrix[0][1]    # ML vs DL      - similar topics
+similarity_matrix[0][2]    # ML vs cooking - unrelated
 ```
 
-- `np.dot(a, b)` — multiply pairwise, sum it up
-- `np.linalg.norm(v)` — the length of the vector
+- one call gives you the **whole matrix**, not just one pair
+- the diagonal is always `1.000` — every text is identical to itself
+- under the hood it's still just `dot(a, b) / (|a| · |b|)` — the cosine of the angle
 - the ratio = the cosine of the angle → **1.0 = same direction, 0 = unrelated, −1 = opposite**
 
 ### Why angle and not distance?
 
 Vector **length** tracks things like how long or emphatic the text is. Vector **direction** carries the meaning. "Great product" and a five-paragraph rave point the *same way* but have very different lengths — Euclidean distance would call them far apart, cosine correctly calls them near.
 
-🧑‍🏫 **Trainer note:** OpenAI embeddings come back **normalised to length 1**, so for them cosine similarity and dot product are the *same number*. Worth saying out loud when a student asks why libraries sometimes just use a dot product.
+🧑‍🏫 **Trainer note:** both `all-MiniLM-L6-v2` and the OpenAI models return vectors you can treat as **length 1**, so cosine similarity and the plain dot product come out the *same number*. Worth saying out loud when a student asks why library code sometimes skips the division.
 
 ### Reading the numbers
 
@@ -184,7 +203,7 @@ You never embed a whole document. You cut it into **chunks** and embed each one.
 | **Fixed-size** | every N characters/tokens | quick prototypes, uniform text | cuts sentences in half ❌ |
 | **Sentence** | split on `.` / a sentence splitter | short-answer FAQs | chunks may be too small for context |
 | **Paragraph / heading** | split on `\n\n` or on `##` headings | structured docs, notes, policies ✅ | needs structure to exist |
-| **Recursive character** | try paragraph → sentence → word until it fits | the sensible default ✅ | slightly more code |
+| **Recursive character** | try paragraph → sentence → word until it fits | **the sensible default ✅ — what we use** | one import |
 | **Semantic** | split where the meaning shifts (embed sentences, cut on drops) | high-value corpora | slow + costs embeddings `[Extended]` |
 
 ### Size and overlap
@@ -192,26 +211,39 @@ You never embed a whole document. You cut it into **chunks** and embed each one.
 - **Size:** ~200–500 tokens (≈ 800–2,000 characters) is the usual sweet spot. Dense FAQ text → smaller. Flowing prose or narrative → bigger.
 - **Overlap:** repeat **10–20%** of the previous chunk at the start of the next one.
 
-**Why overlap exists** — the failure to demo live (notebook §6, `size=140, overlap=0`):
+**Why this matters** — the failure to demo live (notebook §6). Slice the company profile every 200 characters with a three-line hand-rolled chunker:
 
 ```
-chunk 0:  "... The refund window is 3"
-chunk 1:  "0 days from the date of delivery. Refunds are credited ..."
+chunk 2:  "... Rahul Verma is the CT"
+chunk 3:  "O and co-founder. He graduated from BITS Pilani ..."
 ```
 
-The chunker sliced the number **30 straight down the middle**. Ask *"how many days do I have to return an item?"* and neither chunk holds the answer — one says the window is "3", the other opens with a stray "0". The fact is gone, and no model can recover it.
+It sliced **CTO straight down the middle**. Ask *"who is the CTO?"* and **the word CTO does not exist in any chunk** — one ends in "CT", the next opens with a stray "O". The fact is gone, and no model can recover it.
 
-Re-run at `overlap=40` and chunk 1 begins *"…the refund window is 30 days from the date of delivery"* — whole. **Nothing changed but the boundaries.**
+🧑‍🏫 **Trainer note — teach the failure first, then the library.** The naive chunker exists in the notebook *purely to be broken*. Once they've seen it destroy a fact, `RecursiveCharacterTextSplitter` stops being "another import to memorise" and becomes the obvious fix:
 
-💡 **AHA:** *"Bad chunking beats a good model. You can pay for GPT-5 and still lose to someone with a cheap model and sensible boundaries."*
+```python
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=50)
+chunks = splitter.split_text(company_info)     # 16 chunks, every one ending on a whole word
+```
+
+It tries a **paragraph** break first, then a **sentence**, then a **word** — cutting mid-word only as a last resort. Chunk 4 now carries *"Rahul Verma is the CTO and co-founder"* intact. **Nothing changed but the boundaries.**
+
+💡 **AHA:** *"Bad chunking beats a good model. You can pay for the most expensive model on earth and still lose to someone with a cheap model and sensible boundaries."*
 
 ### Metadata — do this from day one
 
 Store fields alongside each chunk: `source`, `page`, `section`, `date`, `author`.
 
 ```python
-{"text": "The refund window is 30 days…",
- "metadata": {"source": "policy_v3.pdf", "page": 12, "section": "Returns"}}
+collection.add(
+    ids=[f"chunk_{i}" for i in range(len(chunks))],
+    embeddings=model.encode(chunks).tolist(),
+    documents=chunks,
+    metadatas=[{"source": "policy_v3.pdf", "page": 12, "section": "Returns"}, ...],
+)
 ```
 
 Two payoffs: you can **filter before searching** ("only 2026 docs", "only this student's files"), and you can **cite** — *"Policy v3, page 12."* Citations come from your metadata, never from the model's memory.
@@ -243,23 +275,23 @@ Here's what breaks as you grow:
 ```python
 import chromadb
 
-client = chromadb.Client()                      # in-memory (PersistentClient(path=…) to keep it)
-col = client.get_or_create_collection("course_notes")
+chroma_client = chromadb.Client()               # in-memory (PersistentClient(path=…) to keep it)
+collection = chroma_client.get_or_create_collection(name="techsolutions")
 
-col.add(
-    ids=["c1", "c2"],                            # your IDs — needed to update/delete later
-    documents=[chunk1_text, chunk2_text],        # the original text, stored alongside
-    embeddings=[vec1, vec2],                     # the vectors we made in §2
-    metadatas=[{"day": 1}, {"day": 2}],          # for filtering + citations
+collection.add(
+    ids=[f"chunk_{i}" for i in range(len(chunks))],   # your IDs — needed to update/delete later
+    embeddings=model.encode(chunks).tolist(),         # Chroma wants a list, not a numpy array
+    documents=chunks,                                  # the original text, stored alongside
 )
 
-res = col.query(
-    query_embeddings=[embed("what is a token?")],
+results = collection.query(
+    query_embeddings=model.encode(["Who founded the company?"]).tolist(),
     n_results=3,
-    where={"day": 1},                            # metadata filter — optional
 )
-print(res["documents"][0])                       # the top-3 chunk texts
+print(results["documents"][0])                   # the top-3 chunk texts
 ```
+
+🧑‍🏫 **The `.tolist()` is the one students forget.** `model.encode()` hands back a numpy array; Chroma wants plain Python lists. The error is not obvious — call it out before they hit it.
 
 ⚠️ **Two things that trip everyone up:**
 - Chroma returns **`distances`, not similarities** — **lower is better**. For cosine space, `similarity ≈ 1 − distance`.
@@ -300,11 +332,17 @@ documents → chunk → embed → store (vectors + text + metadata)
 query → embed (SAME model) → search → top-k chunks
 ```
 
-The class corpus: **the Day 1 and Day 2 course notes themselves**. Ask *"what is a token?"* or *"who runs the function in function calling?"* and watch the right paragraph surface out of text that nobody tagged, indexed or labelled by hand.
+The class corpus: the **TechSolutions India** company profile — founders, product prices, leave policy, benefits, clients. Ask it questions whose words don't appear in the document at all:
 
-💡 **AHA:** *"You just built a search engine over your own course. Nobody wrote a single keyword rule."*
+| Ask this | The document actually says |
+| ----- | ----- |
+| *"Who are the big **customers**?"* | "…major **clients** include HDFC Bank, Tata Motors…" |
+| *"**work from home** policy"* | "…hybrid model with 3 days in office and 2 days **remote**" |
+| *"How many **holidays** do staff get?"* | "…employees receive 24 paid **leaves**…" |
 
-🧑‍🏫 **Trainer tip:** get a **wrong** result on purpose. Ask something the notes never covered — *"what is the LPU hostel fee?"* — and show that the search **still confidently returns three chunks**. Similarity search *always* returns its top-k; it has no concept of "nothing here is relevant." That failure mode is the whole reason Day 4 spends time on grounding and "I don't know."
+💡 **AHA:** *"None of those queries share the document's words — and the right chunk comes back every time. Nobody wrote a single keyword rule."*
+
+🧑‍🏫 **Trainer tip — get a wrong result on purpose.** Ask something the document never mentions — *"what is the hostel fee?"* — and show that the search **still confidently returns three chunks**. Similarity search *always* returns its top-k; it has no concept of "nothing here is relevant." That failure mode is the whole reason Day 4 spends time on grounding and "I don't know."
 
 ❓ **Ask:** *"Which phase runs on every user request — and what does that mean for latency?"* → *only querying: one embedding call plus a search, tens of milliseconds. Indexing is done once, offline. That split is why RAG is fast enough to ship.*
 
@@ -315,18 +353,23 @@ The class corpus: **the Day 1 and Day 2 course notes themselves**. Ask *"what is
 You have the three most relevant chunks. Day 1 gave you a model that writes. Snap them together:
 
 ```python
-chunks  = search("who runs the function in function calling?", k=3)
-context = "\n\n".join(chunks)
+from litellm import completion
 
-answer = client.chat.completions.create(
+question = "Who is the CTO and what is his background?"
+context  = "\n\n".join(search(question, n_results=3)["documents"][0])
+
+answer = completion(
     model="gpt-4o-mini",
     messages=[
         {"role": "system", "content": "Answer using ONLY the context below. If it isn't there, say you don't know.\n\n" + context},
-        {"role": "user",   "content": "Who runs the function in function calling?"},
+        {"role": "user",   "content": question},
     ],
+    temperature=0,          # for RAG you want reading, not inventing
 )
 print(answer.choices[0].message.content)
 ```
+
+🧑‍🏫 **Why `temperature=0` here.** Everywhere else you might dial creativity up; in RAG the model's job is to *report what the context says*. Turning the randomness off is part of the grounding story — name it, it comes back on Day 4.
 
 **That is RAG** — **R**etrieval **A**ugmented **G**eneration:
 - **Retrieval** — today's entire lesson: find the right chunks.
@@ -347,7 +390,7 @@ Fill-in-the-blank versions are in the notebook (§10) — these are the same tas
 1. **Similarity ladder** — embed one query and four sentences (one paraphrase, one same-topic, one different-topic, one nonsense). Rank them by cosine and check the order matches your intuition.
 2. **Break the chunker** — chunk a paragraph at 40 characters with no overlap, then query for a fact that straddles a boundary. Watch it fail. Add overlap; watch it recover.
 3. **Filtered search** — add `metadata={"day": 1 or 2}` to your chunks, then run the *same* query with `where={"day": 1}` and with no filter. Compare the top hit.
-4. **Cheap vs precise `[Extended]`** — embed the same sentence at `dimensions=1536` and `dimensions=256`. Does the *ranking* of three documents change? What did you save?
+4. **Two models, one question `[Extended]`** — index the chunks with `all-MiniLM-L6-v2`, then run a query embedded with `text-embedding-3-small`. Watch it break. Fix it, and say in one sentence why.
 
 ---
 
@@ -355,11 +398,11 @@ Fill-in-the-blank versions are in the notebook (§10) — these are the same tas
 *(answers in italics — trainer copy)*
 
 1. What is an embedding, in one sentence? — *a fixed-length list of numbers representing the meaning of a piece of text.*
-2. How many dimensions does `text-embedding-3-small` return by default? — *1536 (shrinkable to as few as 256 with the `dimensions` parameter).*
+2. How many numbers does `all-MiniLM-L6-v2` return — and `text-embedding-3-small`? — *384 and 1536. Same sentences, two incompatible coordinate systems.*
 3. Why must the query and the documents use the same embedding model? — *different models produce different coordinate spaces; mixing them returns nonsense with no error.*
 4. Why cosine similarity rather than Euclidean distance? — *meaning is carried by the vector's direction; length mostly reflects text length/intensity.*
 5. Give two reasons we chunk documents. — *one vector can't represent many ideas; you want the relevant paragraph, not the book; cost/context limits; the 8k-token input cap.*
-6. What is chunk overlap for? — *so a fact split across a boundary still appears whole inside at least one chunk.*
+6. What is chunk overlap for, and which splitter should you reach for? — *overlap means a fact split across a boundary still appears whole in a neighbouring chunk; use `RecursiveCharacterTextSplitter`, which breaks on paragraph → sentence → word rather than mid-token.*
 7. Name two things a vector DB gives you over a numpy array. — *ANN speed, persistence, metadata filtering, updates/deletes, concurrency.*
 8. Chroma returns `distances`. Higher or lower is better? — *lower — it's a distance, not a similarity.*
 9. Why store metadata with each chunk? — *to filter before searching, and to cite the real source.*
@@ -371,16 +414,19 @@ Fill-in-the-blank versions are in the notebook (§10) — these are the same tas
 1. **Index something you own** — your own notes, a Wikipedia article, a PDF you care about. Chunk it, embed it, store it in Chroma, and answer five questions with semantic search.
 2. **Tune it** — run the same five questions at two chunk sizes (e.g. 300 vs 1000 characters). Write down which retrieved better, and your guess at why. Bring the numbers to Day 4.
 3. **Break it on purpose** — find one question where retrieval returns confident nonsense. That example is your ticket into tomorrow's lesson.
-4. `[Extended]` **Compare models** — embed the same 5 sentences with `text-embedding-3-small` and with the free local `all-MiniLM-L6-v2`. Does the ranking agree?
+4. `[Extended]` **Compare models** — embed the same 5 sentences with the local `all-MiniLM-L6-v2` and with `text-embedding-3-small` via LiteLLM. Do the two *rankings* agree, even though the numbers are completely different?
 
 ---
 
 ## 🔗 Resources (verify on teaching day)
+- **Sentence-Transformers:** https://www.sbert.net/
+- **`all-MiniLM-L6-v2` (free, local):** https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+- **LangChain text splitters:** https://python.langchain.com/docs/concepts/text_splitters/
+- **LiteLLM embeddings:** https://docs.litellm.ai/docs/embedding/supported_embedding
 - **OpenAI — Embeddings guide:** https://platform.openai.com/docs/guides/embeddings
 - **OpenAI — pricing:** https://openai.com/api/pricing/
 - **Chroma docs:** https://docs.trychroma.com/
 - **pgvector:** https://github.com/pgvector/pgvector *(the Week-2 bridge)*
-- **`all-MiniLM-L6-v2` (free, local):** https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 - **MTEB leaderboard** (which embedding model is best right now): https://huggingface.co/spaces/mteb/leaderboard
 
 > **Next — Day 4:** RAG end-to-end — grounding, citations, "I don't know", and what to do when retrieval fails.
