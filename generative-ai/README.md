@@ -53,7 +53,7 @@ one gives you the setup and the boring parts, then hands you the build:
 Why keyword search fails on meaning, turning text into embeddings, measuring closeness with cosine similarity, chunking documents (and what bad boundaries destroy), storing and filtering vectors in Chroma, then assembling the full index → embed → store → search pipeline and finishing with RAG in five lines.
 
 - Notebook: [`Day03_AI.ipynb`](notebooks/Day03_AI.ipynb)
-- Exercises: [`Day03_Exercises.ipynb`](exercises/Day03_Exercises.ipynb) — eight short tasks; only the last needs a key
+- Exercise: [`Day03_Exercises.ipynb`](exercises/Day03_Exercises.ipynb) — one exercise in five steps: chunk a document, then embed the same chunks twice (HuggingFace `sentence-transformers` and LiteLLM) and compare
 - Slides: [`Day03_GenAI.pptx`](slides/Day03_GenAI.pptx)
 - Notes: [`Day_03_AI.md`](notes/Day_03_AI.md)
 
