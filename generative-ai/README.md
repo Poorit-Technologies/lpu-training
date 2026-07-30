@@ -67,14 +67,13 @@ Why keyword search fails on meaning, turning text into embeddings, measuring clo
 > **No OpenAI key? Most of it still runs.** The notebook builds on the free local `all-MiniLM-L6-v2` model, so sections 2–5 and 7–9 need no key at all. Only the OpenAI embeddings section (§6) and the RAG teaser (§10) do.
 
 ### Day 4 — RAG end to end
-Rebuilding yesterday's pipeline with **LangChain** and **LCEL** (the `|` pipe), loading a real **PDF** and splitting it into chunks that carry `source` and `page`, watching an ungrounded model invent a policy and then stopping it, making the chain genuinely say **"I don't know"**, returning **citations** taken from metadata, fixing retrieval when it fails (`k`, MMR, query rewriting, hybrid search, reranking), **measuring** it with a golden set and hit-rate@k, and shipping the whole thing as a **Gradio chat app** with a link you can open on your phone.
+Meeting **LangChain** and finding the standard name for every piece you wrote by hand on Day 3, chat models and message types, reusable **prompt templates**, chaining with **LCEL** (the `|` pipe), turning your own `retrieve()` function into a LangChain component with **`RunnableLambda`**, watching an ungrounded model invent a fact and then stopping it, making the chain genuinely say **"I don't know"**, returning **citations** taken from chunk metadata, fixing retrieval when it fails (`n_results`, a distance cut-off, query rewriting, hybrid search, reranking), **measuring** it with a golden set and hit-rate@k, and shipping the whole thing as a **Gradio chat app** with a link you can open on your phone.
 
 - Notebook: [`Day04_AI.ipynb`](notebooks/Day04_AI.ipynb)
 - Slides: [`Day04_GenAI.pptx`](slides/Day04_GenAI.pptx)
 - Notes: [`Day_04_AI.md`](notes/Day_04_AI.md)
 
-> ⚠️ Day 4 needs an **OpenAI API key with quota** — unlike Day 3 there is no free local path, because the whole point is generating an answer.
-> The notebook writes its own 8-page policy PDF, so there is nothing to download.
+> **Sections 1–7 need no API key.** It's the same document, the same local `all-MiniLM-L6-v2` embedder and the same Chroma collection as Day 3 — only the answer-generating half (§8 onwards) calls a paid model.
 
 ### Day 5 — Agents & production GenAI
 *Coming soon.*
