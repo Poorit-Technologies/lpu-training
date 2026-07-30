@@ -76,7 +76,19 @@ Meeting **LangChain** and finding the standard name for every piece you wrote by
 > **Sections 1–7 need no API key.** It's the same document, the same local `all-MiniLM-L6-v2` embedder and the same Chroma collection as Day 3 — only the answer-generating half (§8 onwards) calls a paid model.
 
 ### Day 5 — Agents & production GenAI
-*Coming soon.*
+Finding the wall Day 4's bot hits — where retrieval is **perfect** and the answer is still wrong, because the model needed to *do* something. Building the **agent loop** by hand (LLM + tools + loop, driven by `finish_reason`), turning **yesterday's whole RAG app into one tool** the model can choose to call, watching it **plan** across three tools, giving it **memory** (a list, then a `thread_id`), rebuilding the same agent in one line with **`create_agent`** and seeing the LangGraph cycle underneath, telling a **workflow** from an **agent** and building a router, scoring answers with an **LLM-as-judge** on groundedness (and learning how judges lie), doing the **cost arithmetic of a loop**, and finishing with **prompt injection** arriving through a retrieved document and a **human-in-the-loop** gate that stops it.
+
+- Notebook: [`Day05_AI.ipynb`](notebooks/Day05_AI.ipynb)
+- Slides: [`Day05_GenAI.pptx`](slides/Day05_GenAI.pptx)
+- Notes: [`Day_05_AI.md`](notes/Day_05_AI.md)
+
+**Build it yourself.** One standalone notebook — no starter code, no blanks:
+
+| Notebook | What you build | Key needed |
+| --- | --- | --- |
+| [`Day05a_ResearchAgent.ipynb`](exercises/Day05a_ResearchAgent.ipynb) | a multi-tool agent over a topic you choose: three tools you write, the loop, memory, a Gradio chat, and an approval gate | yes |
+
+> **You need a key from §2 onwards** — the agent loop is API calls all the way down. The embedding model is still the free local `all-MiniLM-L6-v2`, and it's the same document and Chroma collection as Days 3 and 4.
 
 ---
 
