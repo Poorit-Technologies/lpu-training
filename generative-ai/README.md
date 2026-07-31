@@ -75,6 +75,14 @@ Meeting **LangChain** and finding the standard name for every piece you wrote by
 
 > **Sections 1–7 need no API key.** It's the same document, the same local `all-MiniLM-L6-v2` embedder and the same Chroma collection as Day 3 — only the answer-generating half (§8 onwards) calls a paid model.
 
+**Build it yourself.** One standalone notebook — no starter code, no blanks:
+
+| Notebook | What you build | Key needed |
+| --- | --- | --- |
+| [`Day04a_PDFChatbot.ipynb`](exercises/Day04a_PDFChatbot.ipynb) | upload **your own PDF**, index it so every chunk remembers its page, and chat with it through `gr.ChatInterface` — grounded, cited by page number, and honest enough to say "I don't know" | yes, from step 4 |
+
+> No PDF handy? The notebook has a one-cell fallback that downloads the paper which introduced RAG — so you can build a RAG bot that answers questions about RAG.
+
 ### Day 5 — Agents & production GenAI
 Finding the wall Day 4's bot hits — where retrieval is **perfect** and the answer is still wrong, because the model needed to *do* something. Building the **agent loop** by hand (LLM + tools + loop, driven by `finish_reason`), turning **yesterday's whole RAG app into one tool** the model can choose to call, watching it **plan** across three tools, giving it **memory** (a list, then a `thread_id`), rebuilding the same agent in one line with **`create_agent`** and seeing the LangGraph cycle underneath, telling a **workflow** from an **agent** and building a router, scoring answers with an **LLM-as-judge** on groundedness (and learning how judges lie), doing the **cost arithmetic of a loop**, and finishing with **prompt injection** arriving through a retrieved document and a **human-in-the-loop** gate that stops it.
 
