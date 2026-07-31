@@ -83,10 +83,17 @@ Meeting **LangChain** and finding the standard name for every piece you wrote by
 
 > No PDF handy? The notebook has a one-cell fallback that downloads the paper which introduced RAG — so you can build a RAG bot that answers questions about RAG.
 
-### Day 5 — Agents & production GenAI
-Finding the wall Day 4's bot hits — where retrieval is **perfect** and the answer is still wrong, because the model needed to *do* something. Building the **agent loop** by hand (LLM + tools + loop, driven by `finish_reason`), turning **yesterday's whole RAG app into one tool** the model can choose to call, watching it **plan** across three tools, giving it **memory** (a list, then a `thread_id`), rebuilding the same agent in one line with **`create_agent`** and seeing the LangGraph cycle underneath, telling a **workflow** from an **agent** and building a router, scoring answers with an **LLM-as-judge** on groundedness (and learning how judges lie), doing the **cost arithmetic of a loop**, and finishing with **prompt injection** arriving through a retrieved document and a **human-in-the-loop** gate that stops it.
+### Day 5 — Agents
 
-- Notebook: [`Day05_AI.ipynb`](notebooks/Day05_AI.ipynb)
+Day 5 is **three shorter notebooks instead of one long one**. Run them in order — each builds the same
+capability at a higher level, so you end the day knowing what every framework is hiding from you.
+
+| # | Notebook | What you build |
+| --- | --- | --- |
+| 1 | [`Day05_1_ToolsAndAgents.ipynb`](notebooks/Day05_1_ToolsAndAgents.ipynb) | **Start here.** A **tool call** from scratch — one step at a time, so you see exactly what the model sends back. Then the **agent loop** (LLM + tools + `finish_reason`), several tools it chooses between, your **document search turned into a tool**, what a loop actually **costs**, **structured output** with Pydantic and an **LLM judge** for groundedness, and finally a **prompt injection** arriving through a document plus the approval gate that stops it. |
+| 2 | [`Day05_2_LangGraph.ipynb`](notebooks/Day05_2_LangGraph.ipynb) | The same loop, **drawn**. State, nodes and edges; a **conditional edge** that lets the graph branch (the routing pattern, and the workflow-vs-agent decision); an LLM inside a node; `ToolNode` + `tools_condition` rebuilding notebook 1's agent as a **cycle you can see**; **memory** via a checkpointer and `thread_id`; and `interrupt_before` to **pause** a run, inspect it and resume. |
+| 3 | [`Day05_3_CrewAI.ipynb`](notebooks/Day05_3_CrewAI.ipynb) | One level higher again — agents described by **role, goal and backstory**. A single Agent + Task + Crew, then a **two-specialist crew** handing work along, tools, memory, and an honest comparison of all three approaches so you can pick the right one. |
+
 - Slides: [`Day05_GenAI.pptx`](slides/Day05_GenAI.pptx)
 - Notes: [`Day_05_AI.md`](notes/Day_05_AI.md)
 
@@ -96,7 +103,21 @@ Finding the wall Day 4's bot hits — where retrieval is **perfect** and the ans
 | --- | --- | --- |
 | [`Day05a_ResearchAgent.ipynb`](exercises/Day05a_ResearchAgent.ipynb) | a multi-tool agent over a topic you choose: three tools you write, the loop, memory, a Gradio chat, and an approval gate | yes |
 
-> **You need a key from §2 onwards** — the agent loop is API calls all the way down. The embedding model is still the free local `all-MiniLM-L6-v2`, and it's the same document and Chroma collection as Days 3 and 4.
+> **You need an API key throughout Day 5** — an agent loop is API calls all the way down. The document search still uses the free local `all-MiniLM-L6-v2` embedder, so only the answering steps cost anything.
+
+---
+
+## Revision — Five Ways to Call a Model
+
+[`API_Calls_Exercises.ipynb`](exercises/API_Calls_Exercises.ipynb) — a cross-day practice notebook. Every exercise does the same job through a different library, so you can see what actually changes when you swap provider.
+
+| # | Library | What you call | Model | Key needed |
+| --- | --- | --- | --- | --- |
+| Q1 | `openai` | `client.chat.completions.create()` | `gpt-4o-mini`, then `gemini-3.6-flash` through the same client | yes |
+| Q2 | `litellm` | `completion()` | `openai/gpt-4o-mini`, then `gemini/gemini-3.6-flash` | yes |
+| Q3 | `litellm` | `embedding()` | `text-embedding-3-small` (1536 numbers) | yes |
+| Q4 | `sentence-transformers` | `SentenceTransformer(...).encode()` | `all-MiniLM-L6-v2` (384 numbers, local) | **no** |
+| Q5 | `langchain` | `.invoke()` | `ChatOpenAI` and `ChatGoogleGenerativeAI` | yes |
 
 ---
 
