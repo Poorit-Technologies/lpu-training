@@ -70,6 +70,7 @@ Why keyword search fails on meaning, turning text into embeddings, measuring clo
 Meeting **LangChain** and finding the standard name for every piece you wrote by hand on Day 3, chat models and message types, reusable **prompt templates**, chaining with **LCEL** (the `|` pipe), turning your own `retrieve()` function into a LangChain component with **`RunnableLambda`**, watching an ungrounded model invent a fact and then stopping it, making the chain genuinely say **"I don't know"**, returning **citations** taken from chunk metadata, fixing retrieval when it fails (`n_results`, a distance cut-off, query rewriting, hybrid search, reranking), **measuring** it with a golden set and hit-rate@k, and shipping the whole thing as a **Gradio chat app** with a link you can open on your phone.
 
 - Notebook: [`Day04_AI.ipynb`](notebooks/Day04_AI.ipynb)
+- Exercises: [`Day04_Exercises.ipynb`](exercises/Day04_Exercises.ipynb) — LangChain basics only, no vector DB: your first `ChatOpenAI` call, a conversation built from message objects, a reusable `ChatPromptTemplate`, your first LCEL chain, then a Gradio chat app on top of it
 - Slides: [`Day04_GenAI.pptx`](slides/Day04_GenAI.pptx)
 - Notes: [`Day_04_AI.md`](notes/Day_04_AI.md)
 
@@ -109,7 +110,7 @@ capability at a higher level, so you end the day knowing what every framework is
 
 ## Revision — Five Ways to Call a Model
 
-[`API_Calls_Exercises.ipynb`](exercises/API_Calls_Exercises.ipynb) — a cross-day practice notebook. Every exercise does the same job through a different library, so you can see what actually changes when you swap provider.
+[`API_Calls_Exercises.ipynb`](exercises/API_Calls_Exercises.ipynb) — a cross-day practice notebook. Every exercise does the same job through a different library, so you can see what actually changes when you swap provider. **Installs and imports are provided; after that each cell gives you the steps and you write the code.**
 
 | # | Library | What you call | Model | Key needed |
 | --- | --- | --- | --- | --- |
