@@ -64,34 +64,43 @@ GEMINI_API_KEY=...
 
 ---
 
-## 6. Run the Day 1 programs
+## 6. Check it works
 ### Backend
 ```bash
-# OOP examples — no API key needed
-uv run python Day01/backend/oop_demo.py
+# The project is ready when this prints a version
+uv run python -c "import fastapi; print('FastAPI', fastapi.__version__)"
 
 # FastAPI app — then open http://127.0.0.1:8000/docs
-uv run fastapi dev Day01/backend/main.py
+uv run fastapi dev 01_foundations/d1_hello_api.py
 ```
+Press `Ctrl+C` to stop a server. Every file in the module, with what it demonstrates, is listed in `01_foundations/README.md`.
+
 ### AI
 ```bash
 # Python building blocks — no API key needed
-uv run python Day01/ai/01_pydantic_classes.py
+uv run python ai_scripts/01_pydantic_classes.py
 
 # Call OpenAI            (needs OPENAI_API_KEY)
-uv run python Day01/ai/02_openai_call.py
+uv run python ai_scripts/02_openai_call.py
 
 # Call Gemini via OpenAI client   (needs GEMINI_API_KEY)
-uv run python Day01/ai/03_gemini_via_openai.py
+uv run python ai_scripts/03_gemini_via_openai.py
 
 # One interface, many providers   (needs the matching keys)
-uv run python Day01/ai/04_litellm_demo.py
+uv run python ai_scripts/04_litellm_demo.py
 
 # Structured output → Pydantic     (needs OPENAI_API_KEY)
-uv run python Day01/ai/05_structured_output.py
+uv run python ai_scripts/05_structured_output.py
 ```
 
 > **Got a "model not found" error?** Model IDs change often. Open the script and change the model string (e.g. `gpt-5.6`, `gemini-3.6-flash`) to a current one from the provider's docs.
+
+---
+
+## 7. Optional — run one block at a time
+The plain Python files are split into `# %%` **cells**. Install the **Python** and **Jupyter** extensions in VS Code, and a `Run Cell` link appears above each block — or press `Shift+Enter` to run just the block your cursor is in. Values stay alive between cells, so you can change one line and re-run only that part.
+
+`# %%` is only a comment, so the files still run whole with `uv run python`.
 
 ---
 
@@ -100,15 +109,18 @@ uv run python Day01/ai/05_structured_output.py
 code/
 ├─ pyproject.toml        # packages this project uses
 ├─ .env.example          # copy to .env, add your keys
-├─ Day01/
-│  ├─ backend/
-│  │  ├─ oop_demo.py     # OOP basics (offline)
-│  │  └─ main.py         # FastAPI app
-│  └─ ai/
-│     ├─ 01_pydantic_classes.py   # classes + Pydantic (offline)
-│     ├─ 02_openai_call.py
-│     ├─ 03_gemini_via_openai.py
-│     ├─ 04_litellm_demo.py
-│     └─ 05_structured_output.py
-└─ (Day02, Day03, … added as we go)
+├─ 01_foundations/       # Module 1 — Python & OOP, FastAPI, Pydantic
+│  ├─ a1..a3             # Python: refresher, type hints, errors + JSON
+│  ├─ b1..b5             # OOP: classes, pillars, dunders, composition, dataclass
+│  ├─ d1..d7             # FastAPI: endpoints, params, bodies, errors, async, extras
+│  ├─ d8_structured_app/ # the same API split into routers
+│  ├─ e1..e4             # Pydantic: basics, Field rules, validators, types
+│  └─ student_api.py     # the finished app
+├─ ai_scripts/           # GenAI ideas in plain Python (no notebook needed)
+│  ├─ 01_pydantic_classes.py   # classes + Pydantic (offline)
+│  ├─ 02_openai_call.py
+│  ├─ 03_gemini_via_openai.py
+│  ├─ 04_litellm_demo.py
+│  └─ 05_structured_output.py
+└─ (02_…, 03_…, added as we go)
 ```
