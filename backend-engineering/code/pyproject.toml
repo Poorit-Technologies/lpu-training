@@ -10,6 +10,8 @@ dependencies = [
     "pydantic",
     "python-dotenv",
     "email-validator>=2.3.0",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
 ]
 
 [tool.uv.workspace]

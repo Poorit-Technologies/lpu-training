@@ -1,0 +1,36 @@
+# Module 2 · K — the entire database installation.
+#
+#   docker compose up -d        start it (first run downloads ~400 MB)
+#   docker compose ps           is it running?
+#   docker compose exec db psql -U lpu -d lpudb    a SQL prompt inside it
+#   docker compose down         stop it, keep the data
+#   docker compose down -v      stop it and DELETE the data (start clean)
+#
+# Start this pulling at minute 0 of the class. The download is the slow part,
+# not the database.
+
+services:
+  db:
+    image: postgres:18
+    container_name: lpu_postgres
+    environment:
+      POSTGRES_USER: lpu
+      POSTGRES_PASSWORD: lpu
+      POSTGRES_DB: lpudb
+    ports:
+      # left = your laptop, right = inside the container
+      - "5432:5432"
+    volumes:
+      # ⚠️ PostgreSQL 18 MOVED this path. Older tutorials mount
+      # /var/lib/postgresql/data — on 18 that silently writes your data
+      # OUTSIDE the volume, and it vanishes on the next `down`. Nothing errors;
+      # the only clue is initdb running on every start. Mount the parent:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lpu -d lpudb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

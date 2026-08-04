@@ -41,8 +41,8 @@ cp .env.example .env
 
 | # | Topic | Material |
 | --- | --- | --- |
-| 1 | **Backend Foundations** — Python & OOP · FastAPI (path & query params, request bodies, status codes, errors, `async` vs `def`) · Pydantic validation | [notes](notes/01_Foundations.md) · [code](code/01_foundations/) · [slides](slides/01_Foundations.pptx) |
-| 2 | **APIs & Databases** — REST design · full CRUD (PUT/PATCH/DELETE) · error handling · `Depends` & `APIRouter` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | *coming soon* |
+| 1 | **Backend Foundations** — Python & OOP · FastAPI (path & query params, request bodies, status codes, errors, `async` vs `def`) · Pydantic validation | [notes](notes/01_Foundations.md) · [refresher notebook](notebooks/01_Python_Refresher.ipynb) · [code](code/01_foundations/) · [slides](slides/01_Foundations.pptx) |
+| 2 | **APIs & Databases** — REST design · full CRUD (PUT/PATCH/DELETE) · error handling · `Depends` & `APIRouter` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | [notes](notes/02_APIs_and_Databases.md) · [SQL notebook](notebooks/02_SQL_Basics.ipynb) · [code](code/02_apis_and_databases/) · [slides](slides/02_APIs_and_Databases.pptx) |
 | 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | *coming soon* |
 
 ## Running the code
