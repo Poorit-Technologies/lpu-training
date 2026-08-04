@@ -45,6 +45,24 @@ cp .env.example .env
 | 2 | **APIs & Databases** — REST design · full CRUD (PUT/PATCH/DELETE) · error handling · `Depends` & `APIRouter` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | [notes](notes/02_APIs_and_Databases.md) · [SQL notebook](notebooks/02_SQL_Basics.ipynb) · [code](code/02_apis_and_databases/) · [slides](slides/02_APIs_and_Databases.pptx) |
 | 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | [notes](notes/03_Auth_Deploy_Ship.md) · [code](code/03_auth_deploy_ship/) · [deploy guide](DEPLOY.md) · [slides](slides/03_Auth_Deploy_Ship.pptx) |
 
+## 📦 Run it yourself — nothing to install
+
+Four Colab notebooks. **No install, no API key, no database to set up** — they run on a laptop or a
+phone. Do them in this order; each one picks up where the last stopped.
+
+| | Notebook | What you build |
+| --- | --- | --- |
+| 1 | [SQL Basics](notebooks/02_SQL_Basics.ipynb) | tables, `SELECT … WHERE`, `JOIN`, foreign keys |
+| 2 | [FastAPI & CRUD](notebooks/02_FastAPI_CRUD.ipynb) | a real API — all four verbs, 404/409/422, and the PATCH trap |
+| 3 | [SQLAlchemy & Relationships](notebooks/02_SQLAlchemy_Relationships.ipynb) | classes become tables, and the data survives |
+| 4 | [Auth — Hashing, JWT and Roles](notebooks/03_Auth_JWT.ipynb) | a login that issues tokens, and roles that refuse |
+
+> These use FastAPI's `TestClient`, so your app runs **without a server** — that is why no setup is
+> needed. The code is identical to what you would deploy.
+
+**Then, when you want the real thing:** [SETUP.md](SETUP.md) to run it locally in VS Code, and
+[DEPLOY.md](DEPLOY.md) to put it on the internet with a URL you can open on your phone.
+
 ## Running the code
 
 > **Python, OOP and Pydantic are in a notebook, not here** —
