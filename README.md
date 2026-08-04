@@ -61,7 +61,7 @@ Taught **locally in VS Code** using the [`backend-engineering/code/`](backend-en
 | --- | --- | --- |
 | 1 | **Backend Foundations** — Python & OOP (classes, the four pillars, composition, dataclasses) · FastAPI (endpoints, path & query params, request bodies, status codes, errors, `async` vs `def`) · Pydantic validation | [notes](backend-engineering/notes/01_Foundations.md) · [refresher notebook](backend-engineering/notebooks/01_Python_Refresher.ipynb) · [code](backend-engineering/code/01_foundations/) · [slides](backend-engineering/slides/01_Foundations.pptx) |
 | 2 | **APIs & Databases** — REST design · full CRUD · error handling · routers & `Depends` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | [notes](backend-engineering/notes/02_APIs_and_Databases.md) · [SQL notebook](backend-engineering/notebooks/02_SQL_Basics.ipynb) · [code](backend-engineering/code/02_apis_and_databases/) · [slides](backend-engineering/slides/02_APIs_and_Databases.pptx) |
-| 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | *coming soon* |
+| 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | [notes](backend-engineering/notes/03_Auth_Deploy_Ship.md) · [code](backend-engineering/code/03_auth_deploy_ship/) · [deploy guide](backend-engineering/DEPLOY.md) · [slides](backend-engineering/slides/03_Auth_Deploy_Ship.pptx) |
 
 ### Quick start
 Full instructions, including installing uv and Python, are in **[backend-engineering/SETUP.md](backend-engineering/SETUP.md)**.

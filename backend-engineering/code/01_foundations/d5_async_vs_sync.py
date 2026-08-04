@@ -30,12 +30,6 @@ async def slow_async():
     return {"style": "async def", "waited": 2}
 
 
-# --- The trap --------------------------------------------------------------
-# time.sleep() inside an async def blocks EVERYTHING. Never mix them.
-@app.get("/broken")
-async def broken():
-    time.sleep(2)                    # WRONG: blocking call in an async function
-    return {"style": "async def with a blocking call", "problem": "blocks the server"}
 
 
 # Rule of thumb for this course:

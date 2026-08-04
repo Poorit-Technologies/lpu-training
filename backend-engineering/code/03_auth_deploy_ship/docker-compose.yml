@@ -1,0 +1,50 @@
+# Module 3 · Q — three services, one command.
+#
+#   docker compose -f 03_auth_deploy_ship/docker-compose.yml up -d db redis   (just the backing services)
+#   docker compose -f 03_auth_deploy_ship/docker-compose.yml up --build       (everything, API included)
+#
+# Module 2 ran ONE service and you typed the app yourself. This runs all three,
+# and the app is now a container like the others.
+
+services:
+  api:
+    build:
+      context: ..                       # the code/ folder - the Dockerfile needs pyproject.toml
+      dockerfile: 03_auth_deploy_ship/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      # "db" and "redis" are the SERVICE NAMES above. Inside the compose network
+      # they resolve as hostnames - this is why the URL is not localhost.
+      DATABASE_URL: postgresql+psycopg://lpu:lpu@db:5432/lpudb
+      REDIS_URL: redis://redis:6379
+      SECRET_KEY: not-a-real-secret-change-it
+    depends_on:
+      db:
+        condition: service_healthy      # wait until Postgres actually answers, not just starts
+
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: lpu
+      POSTGRES_PASSWORD: lpu
+      POSTGRES_DB: lpudb
+    ports:
+      - "5432:5432"
+    volumes:
+      # ⚠️ PostgreSQL 18 moved this. NOT /var/lib/postgresql/data - on 18 that
+      # silently writes outside the volume and the data vanishes on `down`.
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lpu -d lpudb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

@@ -43,7 +43,7 @@ cp .env.example .env
 | --- | --- | --- |
 | 1 | **Backend Foundations** — Python & OOP · FastAPI (path & query params, request bodies, status codes, errors, `async` vs `def`) · Pydantic validation | [notes](notes/01_Foundations.md) · [refresher notebook](notebooks/01_Python_Refresher.ipynb) · [code](code/01_foundations/) · [slides](slides/01_Foundations.pptx) |
 | 2 | **APIs & Databases** — REST design · full CRUD (PUT/PATCH/DELETE) · error handling · `Depends` & `APIRouter` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | [notes](notes/02_APIs_and_Databases.md) · [SQL notebook](notebooks/02_SQL_Basics.ipynb) · [code](code/02_apis_and_databases/) · [slides](slides/02_APIs_and_Databases.pptx) |
-| 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | *coming soon* |
+| 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | [notes](notes/03_Auth_Deploy_Ship.md) · [code](code/03_auth_deploy_ship/) · [deploy guide](DEPLOY.md) · [slides](slides/03_Auth_Deploy_Ship.pptx) |
 
 ## Running the code
 

@@ -10,16 +10,16 @@ app = FastAPI(title="Params Demo")
 
 # --- PATH param - part of the address. Answers "WHICH one?" ----------------
 # Try:  /students/7        then try:  /students/abc
-@app.get("/students/{student_id}")
-def get_student(student_id: int):        # this int hint IS the validation
-    return {"id": student_id, "name": "Ada"}
+# @app.get("/students/{student_id}")
+# def get_student(student_id: int):        # this int hint IS the validation
+#     return {"id": student_id, "name": "Ada123"}
 
 
 # --- QUERY params - the bit after the ?. Answers "HOW do you want it?" -----
 # Try:  /students?branch=CSE&limit=5     then just:  /students
-@app.get("/students")
-def list_students(branch: str | None = None, limit: int = 10):
-    return {"branch": branch, "limit": limit}
+@app.get("/students/{student_id}")
+def list_students(student_id: int, branch: str | None = None, limit: int = 10):
+    return {"student_id":student_id, "branch": branch, "limit": limit}
 
 
 # --- Adding RULES with Path() and Query() ---------------------------------

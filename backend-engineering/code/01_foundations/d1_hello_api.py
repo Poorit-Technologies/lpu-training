@@ -10,7 +10,7 @@ app = FastAPI(title="Hello API")
 
 @app.get("/")               # "when someone sends a GET to this address, run this"
 def home():
-    return {"message": "Backend is live"}     # a dict goes out as JSON
+    return {"message": "Backend is live and runnn"}     # a dict goes out as JSON
 
 
 @app.get("/health")

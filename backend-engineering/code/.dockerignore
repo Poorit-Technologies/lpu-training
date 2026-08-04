@@ -1,0 +1,23 @@
+# Everything here is EXCLUDED from the image.
+#
+# Two reasons this file matters:
+#   1. Size  - .venv alone can be hundreds of megabytes, and it is useless in the
+#              image anyway because the container installs its own.
+#   2. SAFETY - without this line, your .env with real API keys gets baked into
+#              the image and shipped to whoever pulls it. Say that out loud.
+
+.env
+.env.*
+!.env.example
+*.key
+
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+.git/
+.gitignore
+*.md
+.DS_Store
