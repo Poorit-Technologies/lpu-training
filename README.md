@@ -2,8 +2,8 @@
 
 Course materials for the **Backend Development + Generative AI** programme at **Lovely Professional University**, delivered by [Poorit Technologies](https://github.com/Poorit-Technologies).
 
-**Format:** 10 days · 3 hours/day · 2 weeks
-**Week 1 — Generative AI** (run in Google Colab) · **Week 2 — Backend Engineering** (run locally in VS Code) + capstone project
+**Format:** 3 hours per session · 2 weeks
+**Week 1 — Generative AI**, 5 sessions (run in Google Colab) · **Week 2 — Backend Engineering**, 3 modules (run locally in VS Code) · capstone project
 
 ---
 
@@ -17,9 +17,10 @@ lpu-training/
 │   ├── slides/               class decks (.pptx)
 │   └── notes/                detailed written notes per day
 │
-└── backend-engineering/      ← Week 2 · Days 6–10
+└── backend-engineering/      ← Week 2 · 3 modules
     ├── code/                 runnable uv project (FastAPI, Python)
-    ├── notes/                detailed written notes per day
+    ├── notes/                detailed written notes per module
+    ├── slides/               class decks (.pptx)
     └── SETUP.md              one-time machine setup guide
 ```
 
@@ -37,7 +38,7 @@ Taught entirely in **Google Colab**. Nothing to install: open the notebook, add 
 | 2 | Advanced prompting (zero/few-shot, chain-of-thought) · function calling & tools · LLM parameters · streaming · Gradio UIs | [notebook](generative-ai/notebooks/Day02_AI.ipynb) · [gradio](generative-ai/notebooks/Day02_Gradio.ipynb) · [exercises](generative-ai/exercises/Day02_Exercises.ipynb) · build-it-yourself: [2a word counter](generative-ai/exercises/Day02a_WordCounter.ipynb) · [2b pamphlet generator](generative-ai/exercises/Day02b_PamphletGenerator.ipynb) · [2c chatbot](generative-ai/exercises/Day02c_ChatInterface.ipynb) · [slides](generative-ai/slides/Day02_GenAI.pptx) · [notes](generative-ai/notes/Day_02_AI.md) |
 | 3 | Embeddings · cosine similarity · visualising the space · chunking strategies · vector databases (Chroma) · a semantic search engine + a first taste of RAG | [notebook](generative-ai/notebooks/Day03_AI.ipynb) · [exercise](generative-ai/exercises/Day03_Exercises.ipynb) · build-it-yourself: [3a embedding explorer](generative-ai/exercises/Day03a_EmbeddingExplorer.ipynb) · [3b document Q&A](generative-ai/exercises/Day03b_DocumentQA.ipynb) · [slides](generative-ai/slides/Day03_GenAI.pptx) · [notes](generative-ai/notes/Day_03_AI.md) |
 | 4 | RAG end to end — LangChain & LCEL · `RunnableLambda` over your own retriever · grounding and "I don't know" · citations from metadata · fixing retrieval · measuring it · a Gradio chat app | [notebook](generative-ai/notebooks/Day04_AI.ipynb) · [exercises](generative-ai/exercises/Day04_Exercises.ipynb) · build-it-yourself: [4a chat with your own PDF](generative-ai/exercises/Day04a_PDFChatbot.ipynb) · [slides](generative-ai/slides/Day04_GenAI.pptx) · [notes](generative-ai/notes/Day_04_AI.md) |
-| 5 | Agents — **three notebooks, run in order.** Tool calls from scratch · the agent loop · your document search becomes a tool · cost · structured output & LLM-as-judge · prompt injection and approval gates — then **LangGraph** (state, nodes, conditional edges, `ToolNode`, memory, pause & resume) and **CrewAI** (role/goal/backstory, single agent, multi-agent crew) | [1 tools & agents](generative-ai/notebooks/Day05_1_ToolsAndAgents.ipynb) · [2 LangGraph](generative-ai/notebooks/Day05_2_LangGraph.ipynb) · [3 CrewAI](generative-ai/notebooks/Day05_3_CrewAI.ipynb) · build-it-yourself: [5a research agent](generative-ai/exercises/Day05a_ResearchAgent.ipynb) · [slides](generative-ai/slides/Day05_GenAI.pptx) · [notes](generative-ai/notes/Day_05_AI.md) |
+| 5 | Agents — **three notebooks, run in order.** Tool calls from scratch · the agent loop · your document search becomes a tool · cost · structured output & LLM-as-judge · prompt injection and approval gates — then **LangGraph** (state, nodes, conditional edges, `ToolNode`, memory, pause & resume) and **CrewAI** (role/goal/backstory, single agent, multi-agent crew) | [1 tools & agents](generative-ai/notebooks/Day05_1_ToolsAndAgents.ipynb) · [2 LangGraph](generative-ai/notebooks/Day05_2_LangGraph.ipynb) · [3 CrewAI](generative-ai/notebooks/Day05_3_CrewAI.ipynb) · build-it-yourself: [5b LangGraph basics](generative-ai/exercises/Day05b_LangGraphBasics.ipynb) (no key) · [5a research agent](generative-ai/exercises/Day05a_ResearchAgent.ipynb) · [slides](generative-ai/slides/Day05_GenAI.pptx) · [notes](generative-ai/notes/Day_05_AI.md) |
 
 **Revision — [Five Ways to Call a Model](generative-ai/exercises/API_Calls_Exercises.ipynb):** a cross-day practice notebook — installs and imports given, then the steps only and you write the code. The same job through five different front doors — the `openai` client (OpenAI *and* Gemini), LiteLLM `completion()`, LiteLLM `embedding()` with `text-embedding-3-small`, the local `all-MiniLM-L6-v2` embedder, and LangChain's `ChatOpenAI` / `ChatGoogleGenerativeAI`.
 
@@ -54,24 +55,30 @@ Taught entirely in **Google Colab**. Nothing to install: open the notebook, add 
 
 ## Week 2 — Backend Engineering
 
-Taught **locally in VS Code** using the [`backend-engineering/code/`](backend-engineering/code/) project, managed with [uv](https://docs.astral.sh/uv/).
+Taught **locally in VS Code** using the [`backend-engineering/code/`](backend-engineering/code/) project, managed with [uv](https://docs.astral.sh/uv/). Three modules that build **one app** — it starts as objects and a few endpoints, and ends up containerised, behind a login, on a real database, at a public URL.
 
-| Day | Topic | Material |
+| # | Topic | Material |
 | --- | --- | --- |
-| 6 | Python OOP + FastAPI foundations — path & query params, Pydantic models, `/docs` | [notes](backend-engineering/notes/Day_01_Backend.md) · [code](backend-engineering/code/Day01/) |
-| 7 | REST API design · full CRUD · validation · error handling | *coming soon* |
-| 8 | Databases — SQL, PostgreSQL, SQLAlchemy ORM, relationships | *coming soon* |
-| 9 | Auth & security (JWT, RBAC) · Docker · caching & architecture | *coming soon* |
-| 10 | Deployment · **capstone project** (backend + a GenAI feature) · demo & viva | *coming soon* |
+| 1 | **Backend Foundations** — Python & OOP (classes, the four pillars, composition, dataclasses) · FastAPI (endpoints, path & query params, request bodies, status codes, errors, `async` vs `def`) · Pydantic validation | [notes](backend-engineering/notes/01_Foundations.md) · [code](backend-engineering/code/01_foundations/) · [slides](backend-engineering/slides/01_Foundations.pptx) |
+| 2 | **APIs & Databases** — REST design · full CRUD · error handling · routers & `Depends` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | *coming soon* |
+| 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | *coming soon* |
 
 ### Quick start
 Full instructions, including installing uv and Python, are in **[backend-engineering/SETUP.md](backend-engineering/SETUP.md)**.
 
 ```bash
 cd backend-engineering/code
-uv sync
-uv run fastapi dev Day01/backend/main.py   # then open http://127.0.0.1:8000/docs
 ```
+
+```bash
+uv sync
+```
+
+```bash
+uv run fastapi dev 01_foundations/student_api.py
+```
+
+Then open **http://127.0.0.1:8000/docs**. Every command runs from `backend-engineering/code/`.
 
 For the scripts that call a model, copy the key template first:
 

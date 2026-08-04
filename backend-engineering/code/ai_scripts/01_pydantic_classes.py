@@ -1,7 +1,7 @@
-"""Day 1 · AI — Python building blocks for AI: a class + a Pydantic model.
+"""GenAI in plain Python — Python building blocks for AI: a class + a Pydantic model.
 No API key needed.
 
-Run:  uv run python Day01/ai/01_pydantic_classes.py
+Run:  uv run python ai_scripts/01_pydantic_classes.py
 """
 from pydantic import BaseModel, ValidationError
 

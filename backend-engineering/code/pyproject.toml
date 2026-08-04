@@ -9,9 +9,15 @@ dependencies = [
     "litellm",
     "pydantic",
     "python-dotenv",
+    "email-validator>=2.3.0",
 ]
 
 [tool.uv.workspace]
 members = [
     "lpu-code",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
 ]

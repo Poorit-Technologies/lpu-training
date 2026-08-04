@@ -2,6 +2,13 @@
 
 Everything you need to run the class programs. Do the **one‑time setup** once, then each day just run the files.
 
+> ### 📓 First — half of Module 1 needs none of this
+> **Python, OOP and Pydantic** run in Colab: [`notebooks/01_Python_Refresher.ipynb`](notebooks/01_Python_Refresher.ipynb) —
+> nothing to install, no API key, works on any laptop. This guide is for the half that **starts a server** (FastAPI onwards).
+>
+> **Best order:** kick off `uv sync` (step 4) and leave it downloading, then open the notebook and work
+> through it while it finishes. Your machine will be ready by the time you need it.
+
 ## 0. What you'll install (high level)
 1. **uv** — the modern tool that manages Python, virtual environments, and packages (replaces `pip` + `venv`; much faster). It can even install Python for you.
 2. **Python 3.14** — the language (installed via uv).
@@ -97,30 +104,35 @@ uv run python ai_scripts/05_structured_output.py
 
 ---
 
-## 7. Optional — run one block at a time
-The plain Python files are split into `# %%` **cells**. Install the **Python** and **Jupyter** extensions in VS Code, and a `Run Cell` link appears above each block — or press `Shift+Enter` to run just the block your cursor is in. Values stay alive between cells, so you can change one line and re-run only that part.
+## 7. Running one piece at a time
+The `01_foundations/` files **start a server**, so there is nothing to run line by line. `/docs` is where you
+try one thing at a time: open **http://127.0.0.1:8000/docs** and click *Try it out* on a single endpoint.
+`fastapi dev` reloads on save, so edit the file, save, and refresh — no restart.
 
-`# %%` is only a comment, so the files still run whole with `uv run python`.
+Want to change one line and re-run just that bit? That's the **notebook**
+([`01_Python_Refresher.ipynb`](notebooks/01_Python_Refresher.ipynb)) — every cell runs on its own and values
+stay alive between them.
 
 ---
 
 ## Folder layout
 ```
-code/
-├─ pyproject.toml        # packages this project uses
-├─ .env.example          # copy to .env, add your keys
-├─ 01_foundations/       # Module 1 — Python & OOP, FastAPI, Pydantic
-│  ├─ a1..a3             # Python: refresher, type hints, errors + JSON
-│  ├─ b1..b5             # OOP: classes, pillars, dunders, composition, dataclass
-│  ├─ d1..d7             # FastAPI: endpoints, params, bodies, errors, async, extras
-│  ├─ d8_structured_app/ # the same API split into routers
-│  ├─ e1..e4             # Pydantic: basics, Field rules, validators, types
-│  └─ student_api.py     # the finished app
-├─ ai_scripts/           # GenAI ideas in plain Python (no notebook needed)
-│  ├─ 01_pydantic_classes.py   # classes + Pydantic (offline)
-│  ├─ 02_openai_call.py
-│  ├─ 03_gemini_via_openai.py
-│  ├─ 04_litellm_demo.py
-│  └─ 05_structured_output.py
-└─ (02_…, 03_…, added as we go)
+backend-engineering/
+├─ notebooks/
+│  └─ 01_Python_Refresher.ipynb   # Python · OOP · Pydantic — Colab, nothing to install
+└─ code/                          # ← everything below needs the setup in this guide
+   ├─ pyproject.toml              # packages this project uses
+   ├─ .env.example                # copy to .env, add your keys
+   ├─ 01_foundations/             # Module 1 — FastAPI
+   │  ├─ d1..d7                   # endpoints, params, bodies, errors, async, extras
+   │  ├─ d8_structured_app/       # the same API split into routers
+   │  ├─ student_api.py           # the finished app
+   │  └─ README.md                # what each file shows + the command for it
+   ├─ ai_scripts/                 # GenAI ideas in plain Python (no notebook needed)
+   │  ├─ 01_pydantic_classes.py   # classes + Pydantic (offline)
+   │  ├─ 02_openai_call.py
+   │  ├─ 03_gemini_via_openai.py
+   │  ├─ 04_litellm_demo.py
+   │  └─ 05_structured_output.py
+   └─ (02_…, 03_…, added as we go)
 ```

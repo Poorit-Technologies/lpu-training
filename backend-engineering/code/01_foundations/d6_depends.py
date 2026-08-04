@@ -26,7 +26,7 @@ def list_courses(page: dict = Depends(pagination)):     # same two params, no re
 
 # --- The real use: a check that guards an endpoint ------------------------
 # Try it in /docs - send x-token: secret123, then send something else.
-# 401 = "I don't know who you are". Module 4 replaces the hardcoded string
+# 401 = "I don't know who you are". Module 3 replaces the hardcoded string
 # with a real login and a real token.
 def verify_token(x_token: str | None = Header(default=None)):
     if x_token != "secret123":
@@ -41,4 +41,4 @@ def admin_area(token: str = Depends(verify_token)):
 
 # Notice: admin_area contains no checking code at all. The dependency ran
 # first, and if it raised, the endpoint never ran.
-# This is how logins work in Module 4, and how database sessions work in Module 3.
+# This is how database sessions work in Module 2, and how logins work in Module 3.

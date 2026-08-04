@@ -1,7 +1,7 @@
-"""Day 1 · AI — one interface, many providers, with LiteLLM.
+"""GenAI in plain Python — one interface, many providers, with LiteLLM.
 Swap the model string to switch provider — no new SDK, no rewrite.
 
-Run:    uv run python Day01/ai/04_litellm_demo.py
+Run:    uv run python ai_scripts/04_litellm_demo.py
 Needs:  whichever keys you have (OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY)
 """
 from dotenv import load_dotenv

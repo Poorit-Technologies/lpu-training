@@ -1,8 +1,8 @@
-"""Day 1 · AI — call Gemini using the SAME OpenAI client.
+"""GenAI in plain Python — call Gemini using the SAME OpenAI client.
 Google exposes an OpenAI-compatible endpoint, so only 3 things change:
   api_key, base_url, model.
 
-Run:    uv run python Day01/ai/03_gemini_via_openai.py
+Run:    uv run python ai_scripts/03_gemini_via_openai.py
 Needs:  GEMINI_API_KEY in your .env
 """
 import os

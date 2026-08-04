@@ -54,6 +54,7 @@ Why keyword search fails on meaning, turning text into embeddings, measuring clo
 
 - Notebook: [`Day03_AI.ipynb`](notebooks/Day03_AI.ipynb)
 - Exercise: [`Day03_Exercises.ipynb`](exercises/Day03_Exercises.ipynb) — one exercise in five steps: chunk a document, then embed the same chunks twice (HuggingFace `sentence-transformers` and LiteLLM) and compare
+- Exercise: [`Day03c_ChromaSearch.ipynb`](exercises/Day03c_ChromaSearch.ipynb) — nine short steps on the vector database itself: embed six sentences, store them in an in-memory Chroma collection, query them and read the distances, then do the whole thing again on a chunked document and watch top-k answer a question it has never heard of. **Installs, imports and the text are given; you write every other cell — and no API key.**
 - Slides: [`Day03_GenAI.pptx`](slides/Day03_GenAI.pptx)
 - Notes: [`Day_03_AI.md`](notes/Day_03_AI.md)
 
@@ -98,11 +99,14 @@ capability at a higher level, so you end the day knowing what every framework is
 - Slides: [`Day05_GenAI.pptx`](slides/Day05_GenAI.pptx)
 - Notes: [`Day_05_AI.md`](notes/Day_05_AI.md)
 
-**Build it yourself.** One standalone notebook — no starter code, no blanks:
+**Build it yourself.** Two standalone notebooks — no starter code, no blanks:
 
 | Notebook | What you build | Key needed |
 | --- | --- | --- |
+| [`Day05b_LangGraphBasics.ipynb`](exercises/Day05b_LangGraphBasics.ipynb) | your first graph from scratch — one state class, **four nodes, five edges**, compile, draw and run it. A student result pipeline, no LLM anywhere | **no** |
 | [`Day05a_ResearchAgent.ipynb`](exercises/Day05a_ResearchAgent.ipynb) | a multi-tool agent over a topic you choose: three tools you write, the loop, memory, a Gradio chat, and an approval gate | yes |
+
+> Start with **5b** if graphs are new — it is the straight-line warm-up before notebook 2's branching, and it needs no key at all.
 
 > **You need an API key throughout Day 5** — an agent loop is API calls all the way down. The document search still uses the free local `all-MiniLM-L6-v2` embedder, so only the answering steps cost anything.
 

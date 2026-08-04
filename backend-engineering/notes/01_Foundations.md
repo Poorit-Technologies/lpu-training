@@ -1,6 +1,6 @@
 # Backend Foundations — Python & OOP · FastAPI · Pydantic
 
-**Module 1 of 4 · Backend · 3 hours live** · runs locally in VS Code
+**Module 1 of 3 · Backend · 3 hours live** · runs locally in VS Code
 **Code:** [`code/01_foundations/`](../code/01_foundations/) · **Setup:** [SETUP.md](../SETUP.md)
 
 > **Trainer context:** three things get taught today, in this order — **Python & OOP**, **FastAPI**, **Pydantic**. They stack: OOP teaches the shape of a class, FastAPI gives that class a job, Pydantic makes it enforce itself.
@@ -20,7 +20,7 @@
 
 | Time | Section | |
 | --- | --- | --- |
-| 0–10 | Hook + what the four modules build | 🟢 |
+| 0–10 | Hook + what the three modules build | 🟢 |
 | 10–18 | Setup check · what pip, venv and uv each do | 🟢 |
 | 18–30 | **A.** Python refresher · type hints · errors · JSON | 🟢 |
 | 30–60 | **B.** OOP core — classes, `self`, the 4 pillars, `super()` | 🟢 |
@@ -38,6 +38,8 @@
 | 172–180 | Recap + quiz | 🟢 |
 
 🧑‍🏫 **If you are running ahead**, add the 🔵 demos in this order — each is ~5 minutes and each is a genuine "oh, that's clever" moment: **`Depends`** → **middleware** → **background tasks**. If you are running behind, cut §D12–D14 and §E4 first; they're written up in full for students to read.
+
+> 🔴 **`Depends` (§D12) is on the critical path now.** In the 3-module backend it carries the **database session** (Module 2) and **`get_current_user`** (Module 3). Cutting it here is still fine — **Module 2 re-teaches it cold** before SQLAlchemy — but if you have the five minutes, spending them here makes both later modules faster.
 
 ## 🎯 Objectives
 By the end a student can:
@@ -69,12 +71,11 @@ Let three or four answers land. They'll say "host it", "make a website", "put it
 
 | Module | What we build |
 | --- | --- |
-| **1 — today** | Objects, an API that answers, and data that validates itself |
-| **2** | The same API done properly: full CRUD, real error handling |
-| **3** | A real database, so the data survives a restart |
-| **4** | Logins and roles, Docker, and shipping it |
+| **1 — today** | **Backend Foundations** — Python & OOP · FastAPI · Pydantic |
+| **2** | **APIs & Databases** — REST design · full CRUD · error handling · `Depends` & `APIRouter` · SQL · PostgreSQL · SQLAlchemy · relationships |
+| **3** | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · live deployment · an AI endpoint |
 
-> One app, grown over four sessions. Say it: *"Today's app is small on purpose — you're going to live with it for a while."*
+> One app, grown over three sessions. Say it: *"Today's app is small on purpose — you're going to live with it for a while."*
 
 ---
 
@@ -345,7 +346,7 @@ class Student:
         self.courses.append(course)
 ```
 A `Student` is not a `Course`, so inheritance would be wrong. **Ask "is-a or has-a?" every time** — most real modelling is has-a.
-📌 Say it: *"Remember this shape. A database calls it a **relationship**, and we build it in Module 3."*
+📌 Say it: *"Remember this shape. A database calls it a **relationship**, and we build it in Module 2."*
 
 **Abstract base class** — a contract children must honour:
 ```python
@@ -406,7 +407,7 @@ Bigger projects add two more, and it's worth naming them now so Modules 3–4 ar
 
 | Folder | Holds |
 | --- | --- |
-| `models/` | **database** tables (Module 3) |
+| `models/` | **database** tables (Module 2) |
 | `schemas/` | **API** shapes — what goes in and out |
 | `services/` | business logic that isn't about HTTP at all |
 
@@ -456,7 +457,7 @@ Three addresses to show: **`/docs`** (interactive) · **`/redoc`** (laid out for
 
 🧑‍🏫 **Practical tip:** `fastapi dev` **reloads on save**. Prove it — change the message, save, refresh. Now they won't restart by hand all day, and when a change *doesn't* appear they'll know to check the terminal for a syntax error.
 
-❓ **Ask the class:** *"What is `127.0.0.1`, and why can't your friend open it?"* → It means *this machine*. Making it reachable is Module 4. Name it, park it.
+❓ **Ask the class:** *"What is `127.0.0.1`, and why can't your friend open it?"* → It means *this machine*. Making it reachable is Module 3. Name it, park it.
 
 ## D3 · The HTTP methods
 
@@ -630,7 +631,7 @@ def admin_area(token: str = Depends(verify_token)):
 ```
 Verified: no token → **401** · wrong token → **401** · `x-token: secret123` → **200**.
 
-💡 **AHA:** `admin_area` contains **no checking code at all**. The dependency ran first; when it raised, the endpoint never ran. *"This is how every login works in Module 4, and how the database session arrives in Module 3."*
+💡 **AHA:** `admin_area` contains **no checking code at all**. The dependency ran first; when it raised, the endpoint never ran. *"This is how the database session arrives in Module 2, and how every login works in Module 3."*
 
 ## D13 · Middleware 🔵 🖥️ [`d7_middleware_and_background.py`](../code/01_foundations/d7_middleware_and_background.py)
 
@@ -691,7 +692,7 @@ app.include_router(health.router)
 🧑‍🏫 **Practical tip:** run this one *after* the single-file app, then open `/docs` on both. **Identical documentation, completely different file layout.** That's the point: structure is for humans, not for the machine.
 
 ## D16 · Named, not taught 📖
-`lifespan` (run code at startup/shutdown — used for database connections in Module 3) · `TestClient` (automated tests) · WebSockets (live two-way connections) · static files and HTML templates. One sentence each, so students know the words exist.
+`lifespan` (run code at startup/shutdown — used for database connections in Module 2) · `TestClient` (automated tests) · WebSockets (live two-way connections) · static files and HTML templates. One sentence each, so students know the words exist.
 
 ---
 
@@ -826,7 +827,7 @@ model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 `StudentIn` accepts the password. `StudentOut` doesn't have one. Same idea as `models/` vs `schemas/` in §C1. This is the habit that keeps private data private, and it costs one extra class.
 
 ## E6 · `pydantic-settings` 📖
-A separate package that reads configuration from environment variables into a validated model — so a missing `DATABASE_URL` fails loudly at startup instead of mysteriously at midnight. **Used in Module 4.** Name it, move on.
+A separate package that reads configuration from environment variables into a validated model — so a missing `DATABASE_URL` fails loudly at startup instead of mysteriously at midnight. **Used in Module 3.** Name it, move on.
 
 ---
 
@@ -893,7 +894,7 @@ class = blueprint, object = instance · `self` = this object · encapsulation ke
 ## 🏠 Homework
 1. **Course API.** A separate API for `Course`: `id`, `code` (pattern `^[A-Z]{2}\d{3}$`), `title` (3–100 chars), `credits` (1–6). `GET /courses`, `GET /courses/{id}` with a 404, `POST /courses` returning 201 and a `CourseOut`.
 2. **Split it up.** Move that API into `main.py` + `schemas.py` + `routers/courses.py`, the way §C1 lays out. Confirm `/docs` looks identical afterwards.
-3. **A student has many courses.** In plain Python — no API — model a `Student` holding a list of `Course` objects and print a student with their course codes. *This is what a database calls a relationship; it returns in Module 3.*
+3. **A student has many courses.** In plain Python — no API — model a `Student` holding a list of `Course` objects and print a student with their course codes. *This is what a database calls a relationship; it returns in Module 2.*
 4. **Break it on purpose.** Send five deliberately wrong requests to your API — missing field, wrong type, too short, out of range, unknown id. Write down the status code and message for each and bring them next session.
 
 ---
@@ -924,7 +925,7 @@ Beyond the tracker, added on request — all covered, marked by depth:
 | lifespan · `TestClient` · WebSockets · static files | 📖 D16 |
 | `pydantic-settings` | 📖 E6 |
 
-**Deliberately held back** — say so out loud so students know they're coming, not missing: full CRUD with PUT/PATCH/DELETE and proper error handling (**Module 2**) · databases and relationships (**Module 3**) · authentication, roles, Docker, deployment (**Module 4**).
+**Deliberately held back** — say so out loud so students know they're coming, not missing: full CRUD with PUT/PATCH/DELETE and proper error handling, plus databases and relationships (**Module 2**) · authentication, roles, Redis, Docker, deployment (**Module 3**).
 
 ---
 
@@ -937,5 +938,5 @@ Beyond the tracker, added on request — all covered, marked by depth:
 
 ---
 
-## ⏭️ Next module — *REST APIs: CRUD, Validation & Errors*
-The same Student API, done properly: all five HTTP methods, correct status codes, errors a client can act on, and code that isn't one long file.
+## ⏭️ Next module — *APIs & Databases*
+The same Student API, done properly and then given a memory. First: all five HTTP methods, correct status codes, errors a client can act on, and code that isn't one long file. Then it stops losing everything on `Ctrl+C` — Postgres in a container, SQLAlchemy models, and a real one-to-many relationship.

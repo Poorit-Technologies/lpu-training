@@ -1,6 +1,6 @@
-"""Day 1 · AI — call OpenAI with the official client.
+"""GenAI in plain Python — call OpenAI with the official client.
 
-Run:    uv run python Day01/ai/02_openai_call.py
+Run:    uv run python ai_scripts/02_openai_call.py
 Needs:  OPENAI_API_KEY in your .env
 """
 from dotenv import load_dotenv

@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 app = FastAPI(title="Student API")
 
 # Today's "database": a plain Python list. It lives in memory, so everything
-# is lost when the server restarts. Module 3 fixes that.
+# is lost when the server restarts. Module 2 fixes that.
 students = [
     {"id": 1, "name": "Ada", "branch": "CSE", "age": 20, "password": "secret"},
     {"id": 2, "name": "Raj", "branch": "ECE", "age": 21, "password": "secret"},

@@ -1,6 +1,6 @@
-"""Day 1 · AI — turn an LLM's answer into a validated Pydantic object.
+"""GenAI in plain Python — turn an LLM's answer into a validated Pydantic object.
 
-Run:    uv run python Day01/ai/05_structured_output.py
+Run:    uv run python ai_scripts/05_structured_output.py
 Needs:  OPENAI_API_KEY in your .env
 """
 from dotenv import load_dotenv

@@ -2,7 +2,7 @@
 
 The backend half of the course. Unlike Week 1, this runs **locally on your own machine** in VS Code — not in Colab.
 
-Four modules, three hours each. They build **one app**: it starts as objects and a handful of endpoints, and ends up containerised, behind a login, on a real database.
+Three modules, three hours each. They build **one app**: it starts as objects and a handful of endpoints, and ends up containerised, behind a login, on a real database, at a public URL.
 
 ## Folders
 
@@ -42,9 +42,8 @@ cp .env.example .env
 | # | Topic | Material |
 | --- | --- | --- |
 | 1 | **Backend Foundations** — Python & OOP · FastAPI (path & query params, request bodies, status codes, errors, `async` vs `def`) · Pydantic validation | [notes](notes/01_Foundations.md) · [code](code/01_foundations/) · [slides](slides/01_Foundations.pptx) |
-| 2 | REST API design · full CRUD · validation · error handling | *coming soon* |
-| 3 | Databases — SQL, PostgreSQL, SQLAlchemy ORM, relationships | *coming soon* |
-| 4 | Auth & security (JWT, RBAC) · Docker · deployment | *coming soon* |
+| 2 | **APIs & Databases** — REST design · full CRUD (PUT/PATCH/DELETE) · error handling · `Depends` & `APIRouter` · SQL · PostgreSQL · SQLAlchemy ORM · relationships | *coming soon* |
+| 3 | **Auth, Docker & Deploy** — hashing & JWT · RBAC · security · Redis caching · Docker · deployment · an AI endpoint | *coming soon* |
 
 ## Running the code
 
