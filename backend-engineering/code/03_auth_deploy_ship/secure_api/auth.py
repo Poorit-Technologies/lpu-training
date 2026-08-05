@@ -19,7 +19,8 @@ from models import User
 
 # ⚠️ NEVER a literal in a real app. This default exists so the file runs in class;
 # on Render you set SECRET_KEY in the dashboard and this line is never used.
-SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-production")
+# HS256 signs with SHA-256, so the key must be at least 32 bytes or PyJWT warns.
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-production-min-32-bytes-long")
 ALGORITHM = "HS256"
 TOKEN_MINUTES = 30
 

@@ -14,7 +14,9 @@ from datetime import datetime, timedelta, timezone
 
 import jwt          # the PyJWT package
 
-SECRET = "change-me-in-production"      # in a real app: an environment variable
+# HS256 signs with SHA-256, so the key must be at least 32 bytes - a shorter one
+# weakens the signature, and PyJWT warns about it. In a real app: an env var.
+SECRET = "change-me-in-production-min-32-bytes-long"
 ALGORITHM = "HS256"
 
 payload = {
