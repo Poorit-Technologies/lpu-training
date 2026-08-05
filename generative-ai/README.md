@@ -105,6 +105,7 @@ capability at a higher level, so you end the day knowing what every framework is
 | --- | --- | --- |
 | [`Day05b_LangGraphBasics.ipynb`](exercises/Day05b_LangGraphBasics.ipynb) | your first graph from scratch — one state class, **four nodes, five edges**, compile, draw and run it. A student result pipeline, no LLM anywhere | **no** |
 | [`Day05a_ResearchAgent.ipynb`](exercises/Day05a_ResearchAgent.ipynb) | a multi-tool agent over a topic you choose: three tools you write, the loop, memory, a Gradio chat, and an approval gate | yes |
+| [`Day05c_ControlPanel.ipynb`](exercises/Day05c_ControlPanel.ipynb) | **the week's closer, ~30 min** — a Gradio chatbot with a system-prompt box, a temperature slider and a model dropdown. One function, three widgets, no RAG: change personality, randomness and *provider* from a web page while your code never changes | yes |
 
 > Start with **5b** if graphs are new — it is the straight-line warm-up before notebook 2's branching, and it needs no key at all.
 
