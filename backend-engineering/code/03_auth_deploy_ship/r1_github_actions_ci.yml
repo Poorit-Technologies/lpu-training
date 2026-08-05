@@ -1,0 +1,251 @@
+# =============================================================================
+#  Module 3 · R — GitHub Actions, explained line by line.
+#
+#  This file is a TUTORIAL you read, and a working workflow you can copy.
+#
+#  Read it top to bottom. Every block answers one question:
+#      WHEN does it run?   ->  on:
+#      WHERE does it run?  ->  runs-on:
+#      WHAT does it do?    ->  steps:
+#
+#  ---------------------------------------------------------------------------
+#  TO USE IT IN YOUR OWN PROJECT (your capstone repo)
+#
+#    1. In your repo, make this exact folder:      .github/workflows/
+#    2. Copy this file into it as:                 .github/workflows/ci.yml
+#    3. git add / commit / push
+#    4. Open your repo on GitHub -> the "Actions" tab -> watch it run
+#
+#    ⚠️ The path is not optional. GitHub only looks in `.github/workflows/`.
+#       A perfect workflow one folder away does nothing at all, silently.
+#
+#  ⚠️ THIS FILE, WHERE IT SITS RIGHT NOW, DOES NOT RUN. It is teaching material
+#     living in the course repo. It only becomes live once it is in
+#     `.github/workflows/` of a repo you own.
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+#  name — what you see in the Actions tab. Cosmetic, but future-you will thank
+#  you for something readable when six workflows are listed.
+# -----------------------------------------------------------------------------
+name: CI
+
+# -----------------------------------------------------------------------------
+#  on — the TRIGGER. This is the whole idea of CI: nobody remembers to run the
+#  checks, so the checks run themselves.
+#
+#  A workflow with no matching trigger never runs, and GitHub will not warn you.
+# -----------------------------------------------------------------------------
+on:
+  # Runs when you push to these branches.
+  push:
+    branches: [main]
+
+  # Runs when someone opens a pull request TARGETING main.
+  # This is the one that actually protects you: the checks run BEFORE the merge,
+  # so broken code is caught while it is still someone else's problem to fix.
+  pull_request:
+    branches: [main]
+
+  # Adds a "Run workflow" button in the Actions tab so you can trigger it by
+  # hand. Costs nothing, saves you the day you need to re-run without a commit.
+  workflow_dispatch:
+
+  # Other triggers you will meet later (left here as a menu, not switched on):
+  #   schedule:    - cron: "0 3 * * 1"   # every Monday at 03:00 UTC
+  #   release:     types: [published]     # when you publish a release
+
+
+# -----------------------------------------------------------------------------
+#  jobs — one workflow contains one or more JOBS.
+#
+#  Each job gets its own FRESH VIRTUAL MACHINE. That matters more than it
+#  sounds: two jobs share nothing. Not files, not installed packages, not the
+#  database you started. If job B needs something job A made, you either put
+#  them in the same job or pass it explicitly.
+#
+#  Jobs run IN PARALLEL by default. `needs:` is how you force an order.
+# -----------------------------------------------------------------------------
+jobs:
+
+  # ===========================================================================
+  #  JOB 1 — check that the code installs and parses.
+  # ===========================================================================
+  check:
+    # A human-readable label for the Actions tab.
+    name: Install and check
+
+    # runs-on — which machine GitHub should rent for you, free, for a few
+    # minutes. `ubuntu-latest` is the normal choice and the cheapest.
+    # Also available: windows-latest, macos-latest (macOS costs 10x the minutes).
+    runs-on: ubuntu-latest
+
+    # steps — run in order, top to bottom, on that one machine.
+    # A step is EITHER `uses:` (borrow someone else's action) OR `run:` (your
+    # own shell command). Never both in the same step.
+    steps:
+
+      # -- Step 1 -----------------------------------------------------------
+      # The machine starts completely empty — it does not have your code.
+      # `checkout` is what clones your repo onto it. Almost every workflow
+      # starts with this, and forgetting it produces a baffling "file not
+      # found" for a file you can see in front of you.
+      #
+      # ⚠️ THE VERSION NUMBER IS A SECURITY DECISION, not a formality.
+      #    `@v7` is a MOVING tag — the owner can repoint it at new code, and
+      #    that code then runs inside your CI with access to your secrets.
+      #    In 2025 the `tj-actions/changed-files` action was compromised
+      #    exactly this way, affecting thousands of repositories.
+      #
+      #    Three levels, weakest to strongest:
+      #      @v7                                  moving tag  - convenient
+      #      @v7.0.1                              exact release
+      #      @<40-char-sha>   # v7.0.1            pinned commit - GitHub's
+      #                                           own hardening guidance
+      #
+      #    Keep the trailing `# v7.0.1` comment when you pin a SHA — it keeps
+      #    the human-readable version visible in diffs, and Dependabot updates
+      #    both the SHA and the comment together.
+      - name: Get the code
+        uses: actions/checkout@v7
+
+      # -- Step 2 -----------------------------------------------------------
+      # Install uv, the same tool you use locally. `enable-cache` saves the
+      # downloaded packages between runs, which typically takes a 60-second
+      # install down to a few seconds.
+      #
+      # ⚠️ NOTE THE FULL VERSION: `@v9.0.0`, not `@v9`.
+      #    From v8.0.0 setup-uv publishes IMMUTABLE releases only — the moving
+      #    tags `@v9` and `@v9.0` do not exist and will fail to resolve. That
+      #    was a deliberate response to the supply-chain attack above.
+      #    If you copy `@v9` from an older tutorial, this step errors.
+      - name: Install uv
+        uses: astral-sh/setup-uv@v9.0.0
+        with:
+          enable-cache: true
+
+      # -- Step 3 -----------------------------------------------------------
+      # `run:` executes shell commands on the runner, exactly as if you typed
+      # them. `working-directory` saves you writing `cd` in every step.
+      #
+      # `--frozen` means "install exactly what uv.lock says, and fail if the
+      # lock file is out of date." In CI that is what you want: a build that
+      # quietly resolves different versions than your laptop is not a build
+      # you can trust.
+      - name: Install dependencies
+        working-directory: backend-engineering/code
+        run: uv sync --frozen
+
+      # -- Step 4 -----------------------------------------------------------
+      # A genuine check that this project can actually pass.
+      #
+      # ⚠️ HONEST NOTE: this course project has NO TEST SUITE, so this workflow
+      #    does not pretend to run one. `compileall` parses every .py file and
+      #    fails on any syntax error; the import line proves the dependencies
+      #    actually resolved. That is a real check — it catches the two most
+      #    common broken pushes — but it is not testing behaviour.
+      #
+      #    When you write tests for your capstone, this is where they go:
+      #        run: uv run pytest -q
+      #    and the step below becomes unnecessary.
+      - name: Check every file parses
+        working-directory: backend-engineering/code
+        run: |
+          uv run python -m compileall -q 01_foundations 02_apis_and_databases 03_auth_deploy_ship
+          uv run python -c "import fastapi, sqlalchemy, pwdlib, jwt; print('dependencies resolved')"
+
+      # -- A step that needs a real database ---------------------------------
+      # Commented out because we have no tests to run against it — but this is
+      # the shape, and it is worth knowing it exists. `services:` starts real
+      # containers alongside your job, so CI can test against actual Postgres
+      # instead of a mock. It goes at JOB level, next to `runs-on`:
+      #
+      #   services:
+      #     postgres:
+      #       image: postgres:18
+      #       env:
+      #         POSTGRES_USER: lpu
+      #         POSTGRES_PASSWORD: lpu
+      #         POSTGRES_DB: lpudb
+      #       ports: ["5432:5432"]
+      #       # wait until it is actually accepting connections, not just started
+      #       options: >-
+      #         --health-cmd pg_isready
+      #         --health-interval 10s
+      #         --health-retries 5
+
+
+  # ===========================================================================
+  #  JOB 2 — build the Docker image.
+  #
+  #  This proves the Dockerfile still works. A Dockerfile that broke three
+  #  commits ago is a genuinely miserable thing to discover on deploy day.
+  # ===========================================================================
+  docker:
+    name: Build the Docker image
+    runs-on: ubuntu-latest
+
+    # needs — wait for `check` to pass first. Without this line both jobs start
+    # at once, and you burn minutes building an image for code that does not
+    # even parse. With it, they form a chain.
+    needs: check
+
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v7
+
+      # `docker` is already installed on the runner — nothing to set up.
+      # -f says which Dockerfile, -t names the image, and the final `.`
+      # is the BUILD CONTEXT: the folder Docker is allowed to copy from.
+      - name: Build
+        working-directory: backend-engineering/code
+        run: docker build -f 03_auth_deploy_ship/Dockerfile -t course-api .
+
+
+# =============================================================================
+#  SECRETS — the part to get right before you deploy anything
+#
+#  Never put a password, API key or token in this file. It is in your repo,
+#  and anyone who can read the repo can read it. Instead:
+#
+#    Repo -> Settings -> Secrets and variables -> Actions -> New repository secret
+#
+#  Then use it like this (note: `secrets`, not `env`):
+#
+#      - name: Deploy
+#        run: curl -X POST "$DEPLOY_HOOK"
+#        env:
+#          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+#
+#  GitHub masks secret values in the logs — printing one shows `***`. That is a
+#  safety net, not a strategy: a secret written to a file or sent to a third
+#  party is gone regardless.
+#
+#  ⚠️ Pull requests from FORKS cannot read your secrets. That is deliberate —
+#     otherwise anyone could open a PR that prints your keys. It also means a
+#     deploy step will simply be skipped on external contributions.
+#
+#  ---------------------------------------------------------------------------
+#  THE VOCABULARY, IN ONE PLACE
+#
+#    workflow   this whole file
+#    event      what triggers it            (push, pull_request, schedule)
+#    job        one fresh virtual machine   (jobs run in parallel by default)
+#    runner     the machine itself          (ubuntu-latest)
+#    step       one thing in a job
+#    action     reusable step someone published, pulled in with `uses:`
+#    secret     a value stored by GitHub, never written in this file
+#    artifact   a file a job produces that you want to keep or pass on
+#
+#  ---------------------------------------------------------------------------
+#  THE FOUR MISTAKES EVERYONE MAKES ONCE
+#
+#    1. File in the wrong folder. It must be `.github/workflows/`.
+#    2. Forgetting `actions/checkout`. The runner does not have your code.
+#    3. Expecting job 2 to see job 1's files. Different machines. Use `needs:`
+#       for ordering and artifacts for files.
+#    4. Assuming YAML indentation is forgiving. It is not — two spaces, never
+#       tabs. Most "my workflow does not appear" reports are an indent error,
+#       and GitHub shows the parse failure in the Actions tab.
+# =============================================================================

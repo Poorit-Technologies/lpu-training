@@ -52,6 +52,20 @@ docker compose -f 03_auth_deploy_ship/docker-compose.yml up --build
 The second one runs all three services together — API, Postgres, Redis — and the API now
 reaches the database at `db:5432`, not `localhost`.
 
+## 5 · CI — the checks that run themselves
+
+[`r1_github_actions_ci.yml`](r1_github_actions_ci.yml) is a **commented tutorial** — read it top to
+bottom and you have GitHub Actions. It is also a working workflow: copy it into your capstone repo at
+`.github/workflows/ci.yml`, push, and watch the Actions tab.
+
+```bash
+cat 03_auth_deploy_ship/r1_github_actions_ci.yml
+```
+
+Nothing to run here — the file only becomes live once it sits in `.github/workflows/` of a repo you
+own. It checks that every file parses, that the dependencies resolve, and that the Docker image still
+builds. Both check commands are verified against this project.
+
 ## What runs where
 
 | | Where | Needs |
@@ -60,6 +74,7 @@ reaches the database at `db:5432`, not `localhost`.
 | The secure API | here, in VS Code | `uv sync` + Postgres running |
 | Redis caching | here | Redis running |
 | Docker | here | Docker Desktop |
+| CI (GitHub Actions) | [`r1_github_actions_ci.yml`](r1_github_actions_ci.yml) - read it, then copy it into your own repo | a GitHub account |
 | Deploying it | [DEPLOY.md](../../DEPLOY.md), at home | a GitHub account |
 
 ## When it goes wrong
