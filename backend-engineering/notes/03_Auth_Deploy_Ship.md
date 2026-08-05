@@ -359,7 +359,8 @@ Google Form, open for a fixed window, covering both backend sessions.
 | Backend Architecture · Microservices · Message Queues | ⏭️ named, 90 seconds | §P |
 | Docker | 🟢 taught + built | §Q |
 | Deployment | 🔵 demoed live + 📖 [DEPLOY.md](../DEPLOY.md) take-home | §R |
-| CI/CD · Logging · Monitoring | ⏭️ named | §P |
+| **CI/CD** | ✅ **3 slides + a commented workflow file** | §P · deck 21–23 · [`r1_github_actions_ci.yml`](../code/03_auth_deploy_ship/r1_github_actions_ci.yml) |
+| Logging · Monitoring | ⏭️ named | §P |
 | Refresh tokens · OAuth social login | 📖 named | §O2 |
 | AI endpoint (Week-1 bridge) | ⏭️ demoed | §S |
 
