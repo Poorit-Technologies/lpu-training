@@ -460,7 +460,9 @@ def rag_answer(message, history):
 
 💡 **AHA — the split that matters:** *"Retrieve on the rewritten query. Answer the question the user actually asked. Mix those two up and your bot starts answering questions nobody asked."*
 
-Then `gr.ChatInterface(rag_answer, type="messages").launch(share=True)` and the room opens it on their phones.
+Then `gr.ChatInterface(rag_answer).launch(share=True)` and the room opens it on their phones.
+
+🧑‍🏫 **Trainer note — the `type="messages"` trap.** Gradio 6 **removed** that argument; passing it raises `TypeError: unexpected keyword argument 'type'`. Older tutorials and blog posts are full of it. Messages is now the only history format, so there is nothing left to choose — the function body is unchanged.
 
 🧑‍🏫 **Trainer note:** the examples list deliberately includes **"Who is the CFO?"** Let a student tap it in front of everyone and watch the refusal land. That is the whole day in one screenshot.
 
