@@ -90,7 +90,15 @@ cp backend-engineering/code/.env.example backend-engineering/code/.env
 
 ## Capstone project
 
-The final project combines both weeks: a FastAPI backend with a real GenAI feature. Options include a résumé analyser, a healthcare RAG chatbot, an AI coding assistant, or a smart learning assistant.
+The final project combines both weeks: a FastAPI backend with a real GenAI feature.
+
+| Document | What it is |
+| --- | --- |
+| [**Capstone Playbook**](capstone-projects/Capstone_Playbook.md) ([PDF](capstone-projects/Capstone_Playbook.pdf)) | **Start here.** Six phases from idea to demo, the four tests for your own idea, and exactly how it is marked — nothing hidden. |
+| [30 Capstone Projects](capstone-projects/Capstone_Projects_AgenticAI_Chatbots_ComputerVision.pdf) | A catalogue of ready-made ideas across Agentic AI, chatbots and computer vision. |
+| [Projects — detailed briefs](capstone-projects/Projects.docx) | Day-by-day breakdowns with the marks attached, for the catalogue projects. |
+
+You can pick one from the catalogue or propose your own — the playbook works for either.
 
 ---
 
